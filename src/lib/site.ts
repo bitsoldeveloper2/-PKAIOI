@@ -4,7 +4,8 @@
 export const siteConfig = {
   name: "Pakistan Institute of AI",
   shortName: "PIOAI",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  // Paths are appended as `${url}/path`, so a trailing slash would double up.
+  url: (process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000").replace(/\/+$/, ""),
   tagline: "An institution for the age of intelligence.",
   description:
     "The Pakistan Institute of AI educates engineers, researchers and leaders in artificial intelligence through rigorous programs, applied research and an AI-native campus.",
