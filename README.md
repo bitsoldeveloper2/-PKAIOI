@@ -16,14 +16,14 @@ The institute's platform: public website, academy (programs and course catalog),
 ## Getting started
 
 ```bash
-pnpm install                    # also generates the Prisma client (postinstall)
+npm install                    # also generates the Prisma client (postinstall)
 cp .env.example .env            # then set SESSION_SECRET (48 random bytes, base64url)
-pnpm db:migrate                 # creates dev.db and applies migrations
-pnpm db:seed                    # realistic institution data + demo accounts
-pnpm dev                        # http://localhost:3000
+npm run db:migrate                 # creates dev.db and applies migrations
+npm run db:seed                    # realistic institution data + demo accounts
+npm run dev                        # http://localhost:3000
 ```
 
-Installed with `--ignore-scripts`? Run `pnpm db:generate` before seeding. For a production-style run use `pnpm build && pnpm start`.
+Installed with `--ignore-scripts`? Run `npm run db:generate` before seeding. For a production-style run use `npm run build && npm run start`.
 
 Seeded sign-ins (password `Campus!2026`, or whatever `SEED_PASSWORD` is set to):
 
@@ -41,10 +41,10 @@ To enable the AI tutor and lab reviewer, set `ANTHROPIC_API_KEY`. Without it the
 
 | Command | What it does |
 | --- | --- |
-| `pnpm dev` / `pnpm build` / `pnpm start` | Develop, build (runs `prisma generate` first), serve the production build |
-| `pnpm typecheck` · `pnpm lint` · `pnpm test` | TypeScript, ESLint, Vitest unit tests |
-| `pnpm test:e2e` | Playwright suite against a running or auto-started server (`E2E_COMMAND=pnpm dev` to test the dev server) |
-| `pnpm db:migrate` · `pnpm db:deploy` · `pnpm db:seed` · `pnpm db:reset` | Prisma migrations and seeding |
+| `npm run dev` / `npm run build` / `npm run start` | Develop, build (runs `prisma generate`, then `prisma/deploy.ts`: applies migrations and seeds only an empty database), serve the production build |
+| `npm run typecheck` · `npm run lint` · `npm test` | TypeScript, ESLint, Vitest unit tests |
+| `npm run test:e2e` | Playwright suite against a running or auto-started server (`E2E_COMMAND=npm run dev` to test the dev server) |
+| `npm run db:migrate` · `npm run db:deploy` · `npm run db:seed` · `npm run db:reset` | Prisma migrations and seeding |
 | `node scripts/visual-review.mjs [baseUrl] [outDir]` | Screenshots every surface (desktop + phone, light + dark, signed out and per role) into `tests/visual/` and reports page errors |
 | `node scripts/record-sample-lecture.mjs` | Re-records the sample lecture video used by seeded lessons |
 
@@ -72,10 +72,10 @@ tests/                 unit (Vitest) and e2e (Playwright)
 
 ## Production notes
 
-- **Database**: switch `prisma/schema.prisma` to `provider = "postgresql"`, install `@prisma/adapter-pg`, swap the adapter in `src/server/db.ts` and `prisma/seed.ts`, delete `prisma/migrations`, and run `pnpm db:migrate` to regenerate migrations for Postgres. The schema avoids SQLite-only features.
+- **Database**: switch `prisma/schema.prisma` to `provider = "postgresql"`, install `@prisma/adapter-pg`, swap the adapter in `src/server/db.ts` and `prisma/seed.ts`, delete `prisma/migrations`, and run `npm run db:migrate` to regenerate migrations for Postgres. The schema avoids SQLite-only features.
 - **Rate limiting** is in-process (`src/server/rate-limit.ts`). `RATE_LIMIT_SCALE` (default `1`) multiplies every limit; set it to `50` locally when the e2e and visual suites run repeatedly, never in production. Behind multiple instances, back it with Redis using the same interface.
 - **Secrets**: only `SESSION_SECRET`, `DATABASE_URL` and `ANTHROPIC_API_KEY` are required. Never expose them with `NEXT_PUBLIC_`.
-- **Build output**: `pnpm build && pnpm start` serves the production build. For container images, set `output: "standalone"` in `next.config.ts`, copy `public/` and `.next/static/` next to `.next/standalone/server.js`, and run that file with Node (Next refuses `next start` in standalone mode). Set `NEXT_PUBLIC_SITE_URL` to the public origin for canonical URLs, sitemap and certificate QR codes.
+- **Build output**: `npm run build && npm run start` serves the production build. For container images, set `output: "standalone"` in `next.config.ts`, copy `public/` and `.next/static/` next to `.next/standalone/server.js`, and run that file with Node (Next refuses `next start` in standalone mode). Set `NEXT_PUBLIC_SITE_URL` to the public origin for canonical URLs, sitemap and certificate QR codes.
 - **Headers**: HSTS, nosniff, frame denial, referrer policy and permissions policy are set in `next.config.ts`; the CSP is set per request in `src/proxy.ts`.
 
 ## Security posture

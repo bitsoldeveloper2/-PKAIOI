@@ -2,14 +2,13 @@
   "name": "pioai",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@10.34.5",
   "description": "Pakistan Institute of AI — public site, academy, campus, studio, and institutional operations platform.",
   "engines": {
     "node": ">=22"
   },
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
+    "build": "prisma generate && tsx prisma/deploy.ts && next build",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
@@ -22,7 +21,7 @@
     "db:studio": "prisma studio",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "check": "pnpm typecheck && pnpm lint && pnpm test"
+    "check": "npm run typecheck && npm run lint && npm test"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.125.0",
