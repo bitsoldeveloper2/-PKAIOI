@@ -7,7 +7,11 @@ import { z } from "zod";
  */
 const schema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
-  DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),
+  DATABASE_URL: z
+    .string()
+    .trim()
+    .transform((v) => v.replace(/^(["'])(.*)\1$/, "$2"))
+    .pipe(z.string().min(1, "DATABASE_URL is required").startsWith("file:", 'DATABASE_URL must be a SQLite path starting with "file:"')),
   SESSION_SECRET: z
     .string()
     .min(32, "SESSION_SECRET must be at least 32 characters (generate 48 random bytes)"),
