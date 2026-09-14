@@ -2,7 +2,7 @@
   "name": "pioai",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@11.1.2",
+  "packageManager": "pnpm@10.34.5",
   "description": "Pakistan Institute of AI — public site, academy, campus, studio, and institutional operations platform.",
   "engines": {
     "node": ">=22"
