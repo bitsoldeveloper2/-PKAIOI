@@ -16,12 +16,14 @@ The institute's platform: public website, academy (programs and course catalog),
 ## Getting started
 
 ```bash
-pnpm install
+pnpm install                    # also generates the Prisma client (postinstall)
 cp .env.example .env            # then set SESSION_SECRET (48 random bytes, base64url)
 pnpm db:migrate                 # creates dev.db and applies migrations
 pnpm db:seed                    # realistic institution data + demo accounts
 pnpm dev                        # http://localhost:3000
 ```
+
+Installed with `--ignore-scripts`? Run `pnpm db:generate` before seeding. For a production-style run use `pnpm build && pnpm start`.
 
 Seeded sign-ins (password `Campus!2026`, or whatever `SEED_PASSWORD` is set to):
 
