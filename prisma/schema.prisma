@@ -1,0 +1,721 @@
+// PIOAI — Pakistan Institute of AI
+// Data model for the public site, academy, campus, studio, and institutional operations.
+//
+// Local development runs on SQLite through the better-sqlite3 driver adapter.
+// The schema deliberately avoids provider-specific features so it can be moved to
+// PostgreSQL (provider = "postgresql" + @prisma/adapter-pg) with regenerated migrations.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Identity & access
+// ─────────────────────────────────────────────────────────────────────────────
+
+enum Role {
+  STUDENT
+  INSTRUCTOR
+  STAFF
+  ADMIN
+}
+
+model User {
+  id              String    @id @default(cuid())
+  email           String    @unique
+  name            String
+  passwordHash    String
+  role            Role      @default(STUDENT)
+  headline        String?
+  bio             String?
+  avatarUrl       String?
+  timezone        String    @default("Asia/Karachi")
+  emailVerifiedAt DateTime?
+  lastLoginAt     DateTime?
+  disabledAt      DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  sessions          Session[]
+  passwordResets    PasswordResetToken[]
+  enrollments       Enrollment[]
+  lessonProgress    LessonProgress[]
+  quizAttempts      QuizAttempt[]
+  labSubmissions    LabSubmission[]
+  notes             Note[]
+  certificates      Certificate[]
+  conversations     Conversation[]
+  coursesTaught     Course[]             @relation("CourseInstructor")
+  memberships       Membership[]
+  auditLogs         AuditLog[]
+  applications      Application[]        @relation("Applicant")
+  reviewedApps      Application[]        @relation("Reviewer")
+  ownedLeads        Lead[]
+  leadActivities    LeadActivity[]
+  posts             Post[]
+  pagesEdited       Page[]
+  announcements     Announcement[]
+  facultyProfile    Faculty?
+  applicationEvents ApplicationEvent[]
+
+  @@index([role])
+}
+
+model Session {
+  id         String   @id @default(cuid())
+  tokenHash  String   @unique
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  lastSeenAt DateTime @default(now())
+  ip         String?
+  userAgent  String?
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Academy: programs, courses, curriculum
+// ─────────────────────────────────────────────────────────────────────────────
+
+enum ProgramLevel {
+  FOUNDATION
+  PROFESSIONAL
+  ADVANCED
+  EXECUTIVE
+  RESEARCH
+}
+
+model Program {
+  id            String       @id @default(cuid())
+  slug          String       @unique
+  title         String
+  tagline       String
+  level         ProgramLevel
+  format        String
+  durationWeeks Int
+  tuitionPkr    Int?
+  summary       String
+  description   String
+  outcomes      Json
+  curriculum    Json
+  admissions    Json
+  imageUrl      String?
+  featured      Boolean      @default(false)
+  published     Boolean      @default(true)
+  order         Int          @default(0)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  courses      Course[]
+  applications Application[]
+
+  @@index([published, order])
+}
+
+enum CourseLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum CourseStatus {
+  DRAFT
+  REVIEW
+  PUBLISHED
+  ARCHIVED
+}
+
+model Course {
+  id               String       @id @default(cuid())
+  slug             String       @unique
+  title            String
+  subtitle         String
+  description      String
+  level            CourseLevel  @default(BEGINNER)
+  category         String
+  language         String       @default("English")
+  durationHours    Int          @default(0)
+  thumbnailUrl     String?
+  accent           String       @default("jade")
+  status           CourseStatus @default(DRAFT)
+  publishedAt      DateTime?
+  featured         Boolean      @default(false)
+  tags             Json
+  learningOutcomes Json
+  prerequisites    Json
+  instructorId     String
+  instructor       User         @relation("CourseInstructor", fields: [instructorId], references: [id])
+  programId        String?
+  program          Program?     @relation(fields: [programId], references: [id], onDelete: SetNull)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  modules      Module[]
+  enrollments  Enrollment[]
+  certificates Certificate[]
+  events       CampusEvent[]
+
+  @@index([status, featured])
+  @@index([instructorId])
+  @@index([category])
+}
+
+model Module {
+  id       String  @id @default(cuid())
+  courseId String
+  course   Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  title    String
+  summary  String?
+  order    Int
+
+  lessons Lesson[]
+
+  @@index([courseId, order])
+}
+
+enum LessonType {
+  VIDEO
+  ARTICLE
+  QUIZ
+  LAB
+}
+
+model Lesson {
+  id              String     @id @default(cuid())
+  moduleId        String
+  module          Module     @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  title           String
+  type            LessonType @default(ARTICLE)
+  order           Int
+  durationMinutes Int        @default(10)
+  content         String     @default("")
+  videoUrl        String?
+  quiz            Json?
+  lab             Json?
+  isPreview       Boolean    @default(false)
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  progress       LessonProgress[]
+  quizAttempts   QuizAttempt[]
+  labSubmissions LabSubmission[]
+  notes          Note[]
+
+  @@index([moduleId, order])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Learning records
+// ─────────────────────────────────────────────────────────────────────────────
+
+enum EnrollmentStatus {
+  ACTIVE
+  COMPLETED
+  DROPPED
+}
+
+model Enrollment {
+  id           String           @id @default(cuid())
+  userId       String
+  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId     String
+  course       Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  status       EnrollmentStatus @default(ACTIVE)
+  progressPct  Int              @default(0)
+  lastLessonId String?
+  orgId        String?
+  org          Organization?    @relation(fields: [orgId], references: [id], onDelete: SetNull)
+  enrolledAt   DateTime         @default(now())
+  completedAt  DateTime?
+  updatedAt    DateTime         @updatedAt
+
+  @@unique([userId, courseId])
+  @@index([courseId])
+  @@index([orgId])
+}
+
+model LessonProgress {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lessonId    String
+  lesson      Lesson    @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  completedAt DateTime?
+  seconds     Int       @default(0)
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([userId, lessonId])
+  @@index([lessonId])
+}
+
+model QuizAttempt {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lessonId  String
+  lesson    Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  score     Int
+  maxScore  Int
+  answers   Json
+  createdAt DateTime @default(now())
+
+  @@index([userId, lessonId])
+}
+
+model LabSubmission {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lessonId  String
+  lesson    Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  language  String
+  code      String
+  passed    Boolean
+  results   Json
+  createdAt DateTime @default(now())
+
+  @@index([userId, lessonId])
+}
+
+model Note {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lessonId  String
+  lesson    Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  body      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, lessonId])
+}
+
+model Certificate {
+  id        String    @id @default(cuid())
+  code      String    @unique
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId  String
+  course    Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  grade     String?
+  issuedAt  DateTime  @default(now())
+  revokedAt DateTime?
+
+  @@unique([userId, courseId])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// AI tutor
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Conversation {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  courseId  String?
+  lessonId  String?
+  mode      String   @default("tutor")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  messages Message[]
+
+  @@index([userId, updatedAt])
+}
+
+enum MessageRole {
+  USER
+  ASSISTANT
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role           MessageRole
+  content        String
+  inputTokens    Int?
+  outputTokens   Int?
+  createdAt      DateTime     @default(now())
+
+  @@index([conversationId, createdAt])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Institution: faculty, research
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Faculty {
+  id         String   @id @default(cuid())
+  slug       String   @unique
+  name       String
+  title      String
+  department String
+  bio        String
+  photoUrl   String?
+  expertise  Json
+  links      Json
+  userId     String?  @unique
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  featured   Boolean  @default(false)
+  order      Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  labsLed ResearchLab[]
+
+  @@index([featured, order])
+}
+
+model ResearchLab {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  tagline     String
+  description String
+  focusAreas  Json
+  leadId      String?
+  lead        Faculty? @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  published   Boolean  @default(true)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  publications Publication[]
+  projects     ResearchProject[]
+}
+
+enum PublicationType {
+  PAPER
+  PREPRINT
+  REPORT
+  DATASET
+}
+
+model Publication {
+  id        String          @id @default(cuid())
+  slug      String          @unique
+  title     String
+  abstract  String
+  authors   Json
+  venue     String
+  year      Int
+  type      PublicationType @default(PAPER)
+  url       String?
+  labId     String?
+  lab       ResearchLab?    @relation(fields: [labId], references: [id], onDelete: SetNull)
+  featured  Boolean         @default(false)
+  published Boolean         @default(true)
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  @@index([year])
+}
+
+enum ProjectStatus {
+  ACTIVE
+  COMPLETED
+  PLANNED
+}
+
+model ResearchProject {
+  id          String        @id @default(cuid())
+  slug        String        @unique
+  title       String
+  summary     String
+  description String
+  status      ProjectStatus @default(ACTIVE)
+  labId       String
+  lab         ResearchLab   @relation(fields: [labId], references: [id], onDelete: Cascade)
+  startedAt   DateTime
+  endedAt     DateTime?
+  published   Boolean       @default(true)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CMS
+// ─────────────────────────────────────────────────────────────────────────────
+
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model Post {
+  id            String        @id @default(cuid())
+  slug          String        @unique
+  title         String
+  excerpt       String
+  body          String
+  coverImageUrl String?
+  category      String        @default("News")
+  tags          Json
+  status        ContentStatus @default(DRAFT)
+  publishedAt   DateTime?
+  authorId      String
+  author        User          @relation(fields: [authorId], references: [id])
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([status, publishedAt])
+}
+
+model Page {
+  id             String        @id @default(cuid())
+  slug           String        @unique
+  title          String
+  body           String
+  seoTitle       String?
+  seoDescription String?
+  status         ContentStatus @default(PUBLISHED)
+  updatedById    String?
+  updatedBy      User?         @relation(fields: [updatedById], references: [id], onDelete: SetNull)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model Announcement {
+  id          String    @id @default(cuid())
+  title       String
+  body        String
+  audience    String    @default("ALL")
+  authorId    String
+  author      User      @relation(fields: [authorId], references: [id])
+  publishedAt DateTime  @default(now())
+  expiresAt   DateTime?
+
+  @@index([publishedAt])
+}
+
+enum EventType {
+  LECTURE
+  WORKSHOP
+  SEMINAR
+  DEADLINE
+  COHORT
+}
+
+model CampusEvent {
+  id          String    @id @default(cuid())
+  title       String
+  description String
+  type        EventType @default(LECTURE)
+  location    String
+  startsAt    DateTime
+  endsAt      DateTime
+  courseId    String?
+  course      Course?   @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  published   Boolean   @default(true)
+
+  @@index([startsAt])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CRM
+// ─────────────────────────────────────────────────────────────────────────────
+
+enum LeadStage {
+  NEW
+  CONTACTED
+  QUALIFIED
+  PROPOSAL
+  WON
+  LOST
+}
+
+model Lead {
+  id           String    @id @default(cuid())
+  name         String
+  email        String
+  phone        String?
+  organization String?
+  role         String?
+  source       String    @default("Website")
+  interest     String?
+  stage        LeadStage @default(NEW)
+  value        Int?
+  ownerId      String?
+  owner        User?     @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+  message      String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  activities LeadActivity[]
+
+  @@index([stage, updatedAt])
+  @@index([email])
+}
+
+enum ActivityType {
+  NOTE
+  CALL
+  EMAIL
+  MEETING
+  STAGE
+}
+
+model LeadActivity {
+  id        String       @id @default(cuid())
+  leadId    String
+  lead      Lead         @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  type      ActivityType @default(NOTE)
+  body      String
+  authorId  String?
+  author    User?        @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  createdAt DateTime     @default(now())
+
+  @@index([leadId, createdAt])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Admissions
+// ─────────────────────────────────────────────────────────────────────────────
+
+enum ApplicationStatus {
+  SUBMITTED
+  UNDER_REVIEW
+  INTERVIEW
+  OFFER
+  ACCEPTED
+  WAITLISTED
+  REJECTED
+  WITHDRAWN
+}
+
+model Application {
+  id          String            @id @default(cuid())
+  programId   String
+  program     Program           @relation(fields: [programId], references: [id])
+  applicantId String?
+  applicant   User?             @relation("Applicant", fields: [applicantId], references: [id], onDelete: SetNull)
+  firstName   String
+  lastName    String
+  email       String
+  phone       String
+  country     String
+  city        String
+  education   String
+  experience  String
+  statement   String
+  linkedinUrl String?
+  status      ApplicationStatus @default(SUBMITTED)
+  score       Int?
+  reviewerId  String?
+  reviewer    User?             @relation("Reviewer", fields: [reviewerId], references: [id], onDelete: SetNull)
+  reviewNotes String?
+  decisionAt  DateTime?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  events ApplicationEvent[]
+
+  @@index([status, createdAt])
+  @@index([programId])
+  @@index([email])
+}
+
+model ApplicationEvent {
+  id            String      @id @default(cuid())
+  applicationId String
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  type          String
+  body          String
+  actorId       String?
+  actor         User?       @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  createdAt     DateTime    @default(now())
+
+  @@index([applicationId, createdAt])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Enterprise
+// ─────────────────────────────────────────────────────────────────────────────
+
+enum OrgPlan {
+  TEAM
+  ENTERPRISE
+}
+
+enum MembershipRole {
+  MEMBER
+  MANAGER
+  OWNER
+}
+
+model Organization {
+  id         String   @id @default(cuid())
+  slug       String   @unique
+  name       String
+  domain     String?
+  plan       OrgPlan  @default(TEAM)
+  seats      Int      @default(25)
+  logoUrl    String?
+  inviteCode String   @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  memberships Membership[]
+  enrollments Enrollment[]
+}
+
+model Membership {
+  id       String         @id @default(cuid())
+  orgId    String
+  org      Organization   @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  userId   String
+  user     User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role     MembershipRole @default(MEMBER)
+  joinedAt DateTime       @default(now())
+
+  @@unique([orgId, userId])
+  @@index([userId])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Platform
+// ─────────────────────────────────────────────────────────────────────────────
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  actorId   String?
+  actor     User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  action    String
+  entity    String
+  entityId  String?
+  meta      Json?
+  ip        String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([entity, entityId])
+}
+
+model SiteSetting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+}

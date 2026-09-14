@@ -1,0 +1,567 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Semantic tokens. Light is the default; `.dark` on <html> swaps the set.
+   Everything downstream (Tailwind utilities, components, charts) reads these.
+   ────────────────────────────────────────────────────────────────────────── */
+:root {
+  --bg: #f7f4ee;
+  --bg-deep: #efeae0;
+  --surface: #ffffff;
+  --surface-2: #f2eee6;
+  --surface-3: #e9e4d9;
+  --ink: #101418;
+  --ink-muted: #5a6169;
+  --ink-subtle: #626972;
+  --line: rgba(16, 20, 24, 0.1);
+  --line-strong: rgba(16, 20, 24, 0.2);
+  --accent: #0f6e56;
+  --accent-strong: #0a5643;
+  --accent-soft: #e1f0ea;
+  --accent-ink: #f4fbf8;
+  --gold: #b8892b;
+  --gold-soft: #f6ecd2;
+  --danger: #b42318;
+  --danger-soft: #fdecea;
+  --success: #166f43;
+  --success-soft: #e3f4ea;
+  --warning: #9a5b00;
+  --warning-soft: #fff1d6;
+  --info: #1d5fbf;
+  --info-soft: #e6eefb;
+  --ring: #0f6e56;
+  --shadow-color: 16 20 24;
+  --hero-a: #0c1a17;
+  --hero-b: #123d33;
+  /* Categorical chart series — validated for CVD separation and contrast on the light surface. */
+  --chart-1: #0d8f68;
+  --chart-2: #b0801a;
+  --chart-3: #7161d9;
+  --chart-4: #cf5238;
+  --chart-5: #2f80c8;
+  --chart-grid: rgba(16, 20, 24, 0.08);
+  color-scheme: light;
+}
+
+.dark {
+  --bg: #0b0e11;
+  --bg-deep: #07090b;
+  --surface: #12161b;
+  --surface-2: #181d23;
+  --surface-3: #20262d;
+  --ink: #eeeae2;
+  --ink-muted: #a5acb5;
+  --ink-subtle: #8d949c;
+  --line: rgba(238, 234, 226, 0.1);
+  --line-strong: rgba(238, 234, 226, 0.22);
+  --accent: #3db48c;
+  --accent-strong: #63cfa8;
+  --accent-soft: rgba(61, 180, 140, 0.14);
+  --accent-ink: #06231b;
+  --gold: #d9b45c;
+  --gold-soft: rgba(217, 180, 92, 0.14);
+  --danger: #f0736a;
+  --danger-soft: rgba(240, 115, 106, 0.14);
+  --success: #5cc48f;
+  --success-soft: rgba(92, 196, 143, 0.14);
+  --warning: #e5a94a;
+  --warning-soft: rgba(229, 169, 74, 0.14);
+  --info: #6ea0ee;
+  --info-soft: rgba(110, 160, 238, 0.14);
+  --ring: #3db48c;
+  --shadow-color: 0 0 0;
+  --hero-a: #07110f;
+  --hero-b: #0f2f28;
+  /* Dark steps of the same hues, validated against the dark surface. */
+  --chart-1: #1c9370;
+  --chart-2: #b48b2a;
+  --chart-3: #8378d0;
+  --chart-4: #d36349;
+  --chart-5: #4680cb;
+  --chart-grid: rgba(238, 234, 226, 0.1);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --font-sans: var(--font-instrument-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-fraunces), ui-serif, Georgia, "Times New Roman", serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --color-bg: var(--bg);
+  --color-bg-deep: var(--bg-deep);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-subtle: var(--ink-subtle);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-ink: var(--accent-ink);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --color-ring: var(--ring);
+
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-2xl: 2rem;
+
+  --shadow-soft: 0 1px 2px rgb(var(--shadow-color) / 0.04), 0 8px 24px -12px rgb(var(--shadow-color) / 0.18);
+  --shadow-lift: 0 2px 4px rgb(var(--shadow-color) / 0.05), 0 24px 48px -20px rgb(var(--shadow-color) / 0.35);
+  --shadow-pop: 0 12px 40px -12px rgb(var(--shadow-color) / 0.4);
+
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+
+  --animate-fade-up: fade-up 0.7s var(--ease-out-expo) both;
+  --animate-fade-in: fade-in 0.5s var(--ease-out-quart) both;
+  --animate-shimmer: shimmer 1.6s linear infinite;
+  --animate-pulse-soft: pulse-soft 2.4s ease-in-out infinite;
+
+  --text-display-xl: clamp(3rem, 7.5vw, 6.5rem);
+  --text-display-xl--line-height: 0.95;
+  --text-display-xl--letter-spacing: -0.02em;
+  --text-display-lg: clamp(2.5rem, 5.5vw, 4.5rem);
+  --text-display-lg--line-height: 1;
+  --text-display-lg--letter-spacing: -0.02em;
+  --text-display-md: clamp(2rem, 3.8vw, 3rem);
+  --text-display-md--line-height: 1.05;
+  --text-display-md--letter-spacing: -0.015em;
+  --text-display-sm: clamp(1.5rem, 2.6vw, 2.125rem);
+  --text-display-sm--line-height: 1.12;
+  --text-display-sm--letter-spacing: -0.01em;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes shimmer {
+  from {
+    background-position: -200% 0;
+  }
+  to {
+    background-position: 200% 0;
+  }
+}
+@keyframes pulse-soft {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@layer base {
+  * {
+    border-color: var(--line);
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    scrollbar-gutter: stable;
+  }
+  body {
+    background-color: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100dvh;
+  }
+  ::selection {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  button,
+  [role="button"] {
+    cursor: pointer;
+  }
+  button:disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+  input,
+  textarea,
+  select {
+    font: inherit;
+    color: inherit;
+  }
+  ::placeholder {
+    color: var(--ink-subtle);
+  }
+  hr {
+    border-color: var(--line);
+  }
+  code,
+  kbd,
+  pre {
+    font-family: var(--font-mono);
+    font-feature-settings: "liga" 0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Typography helpers
+   ────────────────────────────────────────────────────────────────────────── */
+@utility font-display {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-variation-settings: "SOFT" 40, "WONK" 1;
+  font-weight: 400;
+}
+@utility font-display-soft {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-variation-settings: "SOFT" 100, "WONK" 0;
+  font-weight: 300;
+}
+@utility eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  line-height: 1;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--ink-muted);
+}
+@utility link {
+  color: var(--accent);
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: color-mix(in oklab, var(--accent) 45%, transparent);
+  text-underline-offset: 0.2em;
+  transition: text-decoration-color 150ms ease;
+  &:hover {
+    text-decoration-color: var(--accent);
+  }
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Layout helpers
+   ────────────────────────────────────────────────────────────────────────── */
+@utility container-x {
+  width: 100%;
+  max-width: 82rem;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 4vw, 2.5rem);
+}
+@utility container-narrow {
+  width: 100%;
+  max-width: 46rem;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 4vw, 2.5rem);
+}
+@utility container-wide {
+  width: 100%;
+  max-width: 96rem;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 3vw, 2.5rem);
+}
+@utility hairline {
+  border: 1px solid var(--line);
+}
+@utility hairline-t {
+  border-top: 1px solid var(--line);
+}
+@utility hairline-b {
+  border-bottom: 1px solid var(--line);
+}
+@utility surface-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+}
+@utility glass {
+  background: color-mix(in oklab, var(--surface) 78%, transparent);
+  backdrop-filter: saturate(160%) blur(14px);
+  -webkit-backdrop-filter: saturate(160%) blur(14px);
+}
+@utility skeleton {
+  background: linear-gradient(90deg, var(--surface-2) 25%, var(--surface-3) 37%, var(--surface-2) 63%);
+  background-size: 400% 100%;
+  animation: var(--animate-shimmer);
+  border-radius: var(--radius-md);
+}
+@utility grain {
+  position: relative;
+}
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.06;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Skip link — visible only on focus */
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -100%;
+  z-index: 100;
+  padding: 0.625rem 0.875rem;
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  transition: top 0.15s var(--ease-out-quart);
+}
+.skip-link:focus-visible {
+  top: 1rem;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Markdown prose
+   ────────────────────────────────────────────────────────────────────────── */
+.prose-pio {
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: var(--ink);
+  max-width: 70ch;
+}
+.prose-pio > * + * {
+  margin-top: 1.1em;
+}
+.prose-pio h1,
+.prose-pio h2,
+.prose-pio h3,
+.prose-pio h4 {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-variation-settings: "SOFT" 40, "WONK" 1;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  margin-top: 2em;
+}
+.prose-pio h1 {
+  font-size: 2.25rem;
+}
+.prose-pio h2 {
+  font-size: 1.75rem;
+}
+.prose-pio h3 {
+  font-size: 1.375rem;
+}
+.prose-pio h4 {
+  font-size: 1.125rem;
+  font-family: var(--font-sans);
+  font-weight: 600;
+}
+.prose-pio a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 1px;
+}
+.prose-pio a:hover {
+  color: var(--accent-strong);
+}
+.prose-pio strong {
+  font-weight: 600;
+}
+.prose-pio ul,
+.prose-pio ol {
+  padding-left: 1.4em;
+}
+.prose-pio ul {
+  list-style: disc;
+}
+.prose-pio ol {
+  list-style: decimal;
+}
+.prose-pio li + li {
+  margin-top: 0.35em;
+}
+.prose-pio li::marker {
+  color: var(--ink-subtle);
+}
+.prose-pio blockquote {
+  border-left: 2px solid var(--accent);
+  padding-left: 1.25em;
+  color: var(--ink-muted);
+  font-family: var(--font-display);
+  font-size: 1.2em;
+  font-variation-settings: "SOFT" 100, "WONK" 0;
+  font-style: italic;
+}
+.prose-pio code {
+  font-size: 0.875em;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  padding: 0.1em 0.4em;
+  border-radius: var(--radius-xs);
+}
+.prose-pio pre {
+  background: #0e1216;
+  color: #e6e8eb;
+  border-radius: var(--radius-md);
+  padding: 1.1rem 1.25rem;
+  overflow-x: auto;
+  font-size: 0.875rem;
+  line-height: 1.65;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.prose-pio pre code {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  font-size: inherit;
+}
+.prose-pio table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+.prose-pio th,
+.prose-pio td {
+  border-bottom: 1px solid var(--line);
+  padding: 0.6em 0.75em;
+  text-align: left;
+  vertical-align: top;
+}
+.prose-pio th {
+  font-weight: 600;
+  color: var(--ink-muted);
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.prose-pio hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: 2.5em 0;
+}
+.prose-pio img {
+  border-radius: var(--radius-md);
+  max-width: 100%;
+  height: auto;
+}
+.prose-pio .callout {
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.25rem;
+}
+.prose-invert {
+  --ink: #eeeae2;
+  --ink-muted: #a5acb5;
+  --ink-subtle: #8d949c;
+  --line: rgba(238, 234, 226, 0.12);
+  --surface-2: rgba(255, 255, 255, 0.05);
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Code editor (CodeMirror) integration
+   ────────────────────────────────────────────────────────────────────────── */
+.cm-editor {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  height: 100%;
+  background: transparent !important;
+}
+.cm-editor .cm-gutters {
+  background: transparent !important;
+  border-right: 1px solid var(--line) !important;
+  color: var(--ink-subtle) !important;
+}
+.cm-editor .cm-activeLineGutter,
+.cm-editor .cm-activeLine {
+  background: color-mix(in oklab, var(--accent) 8%, transparent) !important;
+}
+.cm-editor .cm-content {
+  caret-color: var(--accent);
+  padding-block: 0.75rem;
+}
+.cm-editor .cm-cursor {
+  border-left-color: var(--accent) !important;
+}
+.cm-editor.cm-focused {
+  outline: none !important;
+}
+.cm-editor .cm-selectionBackground,
+.cm-editor.cm-focused .cm-selectionBackground {
+  background: color-mix(in oklab, var(--accent) 24%, transparent) !important;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Scrollbars (subtle, theme-aware)
+   ────────────────────────────────────────────────────────────────────────── */
+.scroll-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+.scroll-thin::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.scroll-thin::-webkit-scrollbar-thumb {
+  background: var(--line-strong);
+  border-radius: 8px;
+}

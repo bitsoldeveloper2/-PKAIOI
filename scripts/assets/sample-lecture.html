@@ -1,0 +1,40 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+html,body{margin:0;width:1280px;height:720px;overflow:hidden;background:#0c1a17;font-family:Georgia,"Times New Roman",serif;color:#eeeae2}
+.bg{position:absolute;inset:0;background:radial-gradient(70% 60% at 78% 40%,rgba(61,180,140,.28),transparent 60%),radial-gradient(40% 40% at 15% 90%,rgba(217,180,92,.16),transparent 60%),linear-gradient(180deg,#0c1a17,#123d33)}
+.wrap{position:absolute;inset:0;padding:72px 88px;box-sizing:border-box}
+.eyebrow{font:600 13px/1 system-ui,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:rgba(238,234,226,.55)}
+h1{font-weight:400;font-size:64px;line-height:1.02;letter-spacing:-.02em;margin:26px 0 0;max-width:820px}
+h1 em{color:#8fd7bb;font-style:italic}
+.b{font:400 24px/1.45 system-ui,sans-serif;color:rgba(238,234,226,.78);margin-top:34px;max-width:760px}
+.b div{opacity:0;transform:translateY(10px);transition:all .8s cubic-bezier(.16,1,.3,1);margin-top:14px;padding-left:28px;position:relative}
+.b div:before{content:"";position:absolute;left:0;top:13px;width:10px;height:10px;border-radius:50%;background:#3db48c}
+.b div.on{opacity:1;transform:none}
+.mark{position:absolute;right:88px;top:66px;display:flex;align-items:center;gap:14px;font-size:22px}
+.mark .sq{width:44px;height:44px;border-radius:12px;background:#3db48c}
+.bar{position:absolute;left:88px;right:88px;bottom:60px;height:3px;background:rgba(255,255,255,.12)}
+.bar i{display:block;height:100%;width:0;background:#8fd7bb;transition:width 22s linear}
+.foot{position:absolute;left:88px;bottom:76px;font:500 14px system-ui,sans-serif;color:rgba(238,234,226,.5);letter-spacing:.06em}
+.lat{position:absolute;right:60px;bottom:40px;width:520px;height:420px;opacity:.9}
+</style></head><body>
+<div class="bg"></div>
+<svg class="lat" viewBox="0 0 120 100" id="lat"></svg>
+<div class="wrap">
+  <div class="mark"><div class="sq"></div><div>PIOAI</div></div>
+  <div class="eyebrow">Foundations of Machine Learning · Lecture 1</div>
+  <h1>Why prediction <em>is hard.</em></h1>
+  <div class="b">
+    <div>Data is a sample from a process. The process is what you care about.</div>
+    <div>A model that fits the sample perfectly has told you nothing about the process.</div>
+    <div>Validation is not a formality. It is the experiment that tests your claim.</div>
+  </div>
+  <div class="foot">DR. AYESHA REHMAN · PAKISTAN INSTITUTE OF AI</div>
+  <div class="bar"><i id="bar"></i></div>
+</div>
+<script>
+const svg=document.getElementById('lat');let nodes=[];for(let i=0;i<70;i++){const a=i*2.399963,r=8+Math.sqrt(i)*5.4;nodes.push({x:60+Math.cos(a)*r,y:52+Math.sin(a)*r*.62,big:i%11===0,s:Math.random()})}
+let html='';nodes.forEach((n,i)=>nodes.slice(i+1,i+4).forEach(m=>html+=`<line x1="${n.x}" y1="${n.y}" x2="${m.x}" y2="${m.y}" stroke="#3db48c" stroke-opacity=".3" stroke-width=".25"/>`));
+nodes.forEach((n,i)=>html+=`<circle id="c${i}" cx="${n.x}" cy="${n.y}" r="${n.big?1.2:.5}" fill="${n.big?'#d9b45c':'#3db48c'}"/>`);svg.innerHTML=html;
+function tick(t){nodes.forEach((n,i)=>{const c=document.getElementById('c'+i);c.setAttribute('cx',n.x+Math.sin(t/900+n.s*6)*.7);c.setAttribute('cy',n.y+Math.cos(t/1100+n.s*4)*.5)});requestAnimationFrame(tick)}requestAnimationFrame(tick);
+setTimeout(()=>document.getElementById('bar').style.width='100%',300);
+[1800,5200,8800].forEach((ms,i)=>setTimeout(()=>document.querySelectorAll('.b div')[i].classList.add('on'),ms));
+</script></body></html>
