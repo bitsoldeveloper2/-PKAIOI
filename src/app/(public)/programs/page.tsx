@@ -5,7 +5,7 @@ import { ButtonLink } from "@/components/ui/button";
 
 export const metadata: Metadata = {
   title: "Programs",
-  description: "Diplomas, certificates, executive education and a funded research fellowship at the Pakistan Institute of AI.",
+  description: "Diplomas, certificates, executive education, one- and three-month short courses in AI and digital media marketing, and a funded research fellowship at the Pakistan Institute of AI.",
   alternates: { canonical: "/programs" },
 };
 
@@ -19,7 +19,7 @@ export default async function ProgramsPage() {
           <p className="eyebrow">Programs</p>
           <h1 className="mt-4 font-display text-display-lg text-ink">Structured paths, defended work.</h1>
           <p className="mt-4 max-w-xl text-[1.0625rem] text-ink-muted">
-            Every program is cohort-based and project-heavy. You finish with systems you built, reviewed by faculty and an industry examiner — not with a slide deck.
+            Every program is cohort-based and project-heavy. You finish with systems you built, reviewed by faculty and an industry examiner — not with a slide deck. Short courses in AI and digital media marketing run every month in one- and three-month formats.
           </p>
         </div>
         <div className="flex flex-wrap gap-3 md:justify-end">

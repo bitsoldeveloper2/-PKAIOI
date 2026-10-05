@@ -35,7 +35,7 @@ export const publicNav = [
     label: "Academy",
     href: "/academy",
     children: [
-      { label: "Programs", href: "/programs", description: "Diplomas, professional tracks and executive education." },
+      { label: "Programs", href: "/programs", description: "Diplomas, professional tracks, executive education and short courses." },
       { label: "Course catalog", href: "/courses", description: "Self-paced and cohort courses across the AI stack." },
       { label: "Admissions", href: "/admissions", description: "Intakes, requirements, scholarships and how to apply." },
     ],

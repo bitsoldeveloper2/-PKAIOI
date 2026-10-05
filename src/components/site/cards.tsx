@@ -28,6 +28,7 @@ const LEVEL_LABEL: Record<string, string> = {
   PROFESSIONAL: "Professional",
   EXECUTIVE: "Executive",
   RESEARCH: "Research",
+  SHORT_COURSE: "Short course",
 };
 
 export function levelLabel(level: string) {

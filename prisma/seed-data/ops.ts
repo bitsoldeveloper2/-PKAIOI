@@ -59,6 +59,7 @@ export const learnerActivity: SeedLearnerActivity[] = [
     enrollments: [
       { courseSlug: "foundations-of-machine-learning", completedLessons: 99, enrolledDaysAgo: 78, lastActiveDaysAgo: 20, grade: "Merit" },
       { courseSlug: "deep-learning-in-practice", completedLessons: 3, enrolledDaysAgo: 18, lastActiveDaysAgo: 1 },
+      { courseSlug: "applied-ai-for-professionals", completedLessons: 2, enrolledDaysAgo: 6, lastActiveDaysAgo: 2 },
     ],
   },
   {
@@ -70,7 +71,10 @@ export const learnerActivity: SeedLearnerActivity[] = [
   },
   {
     userKey: "zainab",
-    enrollments: [{ courseSlug: "ai-safety-alignment-and-governance", completedLessons: 5, enrolledDaysAgo: 25, lastActiveDaysAgo: 5 }],
+    enrollments: [
+      { courseSlug: "ai-safety-alignment-and-governance", completedLessons: 5, enrolledDaysAgo: 25, lastActiveDaysAgo: 5 },
+      { courseSlug: "digital-media-marketing-essentials", completedLessons: 4, enrolledDaysAgo: 12, lastActiveDaysAgo: 1 },
+    ],
   },
   {
     userKey: "ahmed",
@@ -78,7 +82,10 @@ export const learnerActivity: SeedLearnerActivity[] = [
   },
   {
     userKey: "noor",
-    enrollments: [{ courseSlug: "foundations-of-machine-learning", completedLessons: 2, enrolledDaysAgo: 8, lastActiveDaysAgo: 1 }],
+    enrollments: [
+      { courseSlug: "foundations-of-machine-learning", completedLessons: 2, enrolledDaysAgo: 8, lastActiveDaysAgo: 1 },
+      { courseSlug: "ai-essentials", completedLessons: 3, enrolledDaysAgo: 9, lastActiveDaysAgo: 0 },
+    ],
   },
   {
     userKey: "kamran",
@@ -104,7 +111,10 @@ export const learnerActivity: SeedLearnerActivity[] = [
   {
     userKey: "sara",
     orgSlug: "karachi-port-logistics",
-    enrollments: [{ courseSlug: "ai-safety-alignment-and-governance", completedLessons: 3, enrolledDaysAgo: 30, lastActiveDaysAgo: 4 }],
+    enrollments: [
+      { courseSlug: "ai-safety-alignment-and-governance", completedLessons: 3, enrolledDaysAgo: 30, lastActiveDaysAgo: 4 },
+      { courseSlug: "digital-media-marketing-professional", completedLessons: 2, enrolledDaysAgo: 7, lastActiveDaysAgo: 1 },
+    ],
   },
   {
     userKey: "bilquis",
@@ -303,6 +313,37 @@ const statement = (topic: string) =>
   `I want to join the institute because ${topic}. Over the past two years I have taught myself the basics through online courses, but I have reached the point where I need rigour, mentorship and a community of people who take the work seriously. My goal after the program is to lead an applied AI team that ships systems people can trust.`;
 
 export const applications: SeedApplication[] = [
+  {
+    programSlug: "short-course-digital-media-marketing-essentials",
+    firstName: "Hira",
+    lastName: "Saleem",
+    email: "hira.saleem@example.com",
+    phone: "+92 300 5550188",
+    country: "Pakistan",
+    city: "Faisalabad",
+    education: "BBA, Government College University Faisalabad (2023)",
+    experience: "Runs a home-based clothing brand with 4,000 Instagram followers and handles all of its marketing herself.",
+    statement: "I want to join the one-month Digital Media Marketing short course because my brand only grows when I post, and I have no idea which posts or ads actually bring sales. I need to learn how to plan content, run paid campaigns without wasting money, and read the numbers properly so that I can make this a full-time business.",
+    status: "SUBMITTED",
+    createdDaysAgo: 2,
+    events: [],
+  },
+  {
+    programSlug: "short-course-applied-ai",
+    firstName: "Taimoor",
+    lastName: "Aziz",
+    email: "taimoor.aziz@example.com",
+    phone: "+92 333 5550177",
+    country: "Pakistan",
+    city: "Rawalpindi",
+    education: "MBA, NUST Business School (2020)",
+    experience: "Operations manager at a logistics company; builds the weekly reports in Excel and wants to automate them.",
+    statement: "I use AI assistants every day but I have hit the limit of what the chat window can do. I want the three-month Applied AI short course so that I can clean our data myself, build a simple delay-prediction model for our routes, and automate the reporting that takes my team two days a week. My capstone would be the delay model, evaluated honestly.",
+    status: "UNDER_REVIEW",
+    reviewerKey: "staff",
+    createdDaysAgo: 5,
+    events: [{ type: "STATUS", body: "Moved to Under review.", actorKey: "staff" }],
+  },
   {
     programSlug: "professional-diploma-applied-ai",
     firstName: "Sarah",
@@ -541,6 +582,6 @@ export const conversations: SeedConversation[] = [
 
 export const settings: Record<string, unknown> = {
   "site.banner": { enabled: true, text: "Applications for the September Professional Diploma cohort close 18 July.", href: "/apply" },
-  "admissions.intakes": { diploma: "September 2026", llm: "October 2026", executive: "Quarterly", foundations: "Rolling" },
+  "admissions.intakes": { diploma: "September 2026", llm: "October 2026", executive: "Quarterly", foundations: "Rolling", "short courses": "Monthly" },
   "platform.ai": { tutorEnabled: true, labHintsEnabled: true, dailyMessageCap: 200 },
 };

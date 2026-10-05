@@ -103,6 +103,7 @@ enum ProgramLevel {
   ADVANCED
   EXECUTIVE
   RESEARCH
+  SHORT_COURSE
 }
 
 model Program {

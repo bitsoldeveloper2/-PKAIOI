@@ -326,7 +326,7 @@ export async function deleteEventAction(formData: FormData) {
 const programSchema = z.object({
   title: z.string().trim().min(5).max(200),
   tagline: z.string().trim().min(5).max(200),
-  level: z.enum(["FOUNDATION", "PROFESSIONAL", "ADVANCED", "EXECUTIVE", "RESEARCH"]),
+  level: z.enum(["FOUNDATION", "PROFESSIONAL", "ADVANCED", "EXECUTIVE", "RESEARCH", "SHORT_COURSE"]),
   format: z.string().trim().min(3).max(120),
   durationWeeks: z.coerce.number().int().min(1).max(200),
   tuitionPkr: z.union([z.literal(""), z.coerce.number().int().min(0).max(100_000_000)]).optional(),

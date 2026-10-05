@@ -110,6 +110,16 @@ PhD, National University of Singapore.`,
     links: [{ label: "LinkedIn", url: "https://www.linkedin.com/" }],
     bio: `Tariq Mehmood teaches how AI features are designed, scoped and measured with users. He previously led product for a consumer app with twenty million users across South Asia.`,
   },
+  {
+    slug: "mahnoor-qazi",
+    name: "Mahnoor Qazi",
+    title: "Lecturer · Digital Marketing & Growth",
+    department: "Digital Marketing",
+    userKey: "mahnoor",
+    expertise: ["Performance marketing", "Content strategy", "Marketing analytics", "AI in marketing"],
+    links: [{ label: "LinkedIn", url: "https://www.linkedin.com/" }],
+    bio: `Mahnoor Qazi leads the institute’s short-course track in digital media marketing. She spent eight years running performance marketing for e-commerce and fintech brands in Pakistan and the Gulf, and teaches the discipline the way she practised it: positioning first, creative as strategy, and numbers you can defend.`,
+  },
 ];
 
 export type SeedLab = {

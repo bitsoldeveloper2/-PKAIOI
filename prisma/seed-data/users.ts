@@ -93,6 +93,16 @@ export const users: SeedUser[] = [
     createdDaysAgo: 350,
     lastLoginDaysAgo: 6,
   },
+  {
+    key: "mahnoor",
+    email: "mahnoor.qazi@pioai.edu.pk",
+    name: "Mahnoor Qazi",
+    role: "INSTRUCTOR",
+    headline: "Lecturer · Digital Marketing & Growth",
+    bio: "Mahnoor ran performance marketing for e-commerce and fintech brands across Pakistan and the Gulf before joining the institute to lead the short-course track in digital media marketing.",
+    createdDaysAgo: 150,
+    lastLoginDaysAgo: 1,
+  },
 
   // Students
   { key: "ali", email: "student@pioai.edu.pk", name: "Ali Hassan", role: "STUDENT", headline: "Software engineer · Lahore", createdDaysAgo: 95, lastLoginDaysAgo: 0 },

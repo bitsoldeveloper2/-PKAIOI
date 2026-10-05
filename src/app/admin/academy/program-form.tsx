@@ -51,7 +51,7 @@ export function ProgramForm({ program }: { program: ProgramValues | null }) {
       <aside className="space-y-5">
         <Field label="Level" error={e.level} required>{(b) => (
           <Select {...b} name="level" defaultValue={p?.level ?? "PROFESSIONAL"}>
-            {["FOUNDATION", "PROFESSIONAL", "ADVANCED", "EXECUTIVE", "RESEARCH"].map((l) => <option key={l} value={l}>{l.charAt(0) + l.slice(1).toLowerCase()}</option>)}
+            {["FOUNDATION", "PROFESSIONAL", "ADVANCED", "EXECUTIVE", "RESEARCH", "SHORT_COURSE"].map((l) => <option key={l} value={l}>{l.charAt(0) + l.slice(1).toLowerCase().replace("_", " ")}</option>)}
           </Select>
         )}</Field>
         <Field label="Format" error={e.format} required>{(b) => <Input {...b} name="format" defaultValue={p?.format} placeholder="Hybrid · Evenings" />}</Field>

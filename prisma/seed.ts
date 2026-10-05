@@ -15,6 +15,7 @@ import { PrismaClient, type Prisma } from "../src/generated/prisma/client";
 import { users } from "./seed-data/users";
 import { programs } from "./seed-data/programs";
 import { courses } from "./seed-data/courses";
+import { shortCoursePrograms, shortCourses } from "./seed-data/short-courses";
 import { faculty, labs, publications, projects } from "./seed-data/research";
 import { pages, posts, announcements, events } from "./seed-data/cms";
 import { organizations, leads, applications, learnerActivity, conversations, settings } from "./seed-data/ops";
@@ -139,7 +140,7 @@ async function main() {
 
   console.log("→ programs");
   const programIds = new Map<string, string>();
-  for (const [i, p] of programs.entries()) {
+  for (const [i, p] of [...programs, ...shortCoursePrograms].entries()) {
     const created = await prisma.program.create({
       data: {
         slug: p.slug,
@@ -164,7 +165,7 @@ async function main() {
   console.log("→ courses");
   const courseIds = new Map<string, string>();
   const lessonIds = new Map<string, string[]>(); // courseSlug → ordered lesson ids
-  for (const c of courses) {
+  for (const c of [...courses, ...shortCourses]) {
     const created = await prisma.course.create({
       data: {
         slug: c.slug,
