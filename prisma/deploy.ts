@@ -8,7 +8,8 @@
  */
 import "dotenv/config";
 import { execSync } from "node:child_process";
-import { mkdirSync } from "node:fs";
+import { accessSync, constants, mkdirSync } from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 import { PrismaClient } from "../src/generated/prisma/client";
@@ -27,8 +28,20 @@ if (!url.startsWith("file:")) {
 }
 process.env.DATABASE_URL = url; // the migrate and seed child processes read it too
 
-// SQLite creates the file but not its folder.
-if (url.startsWith("file:")) mkdirSync(path.dirname(path.resolve(url.slice("file:".length))), { recursive: true });
+// SQLite creates the file but not its folder. Name the folder and give a usable
+// example instead of a bare EACCES when the panel still holds a placeholder path.
+const dbDir = path.dirname(path.resolve(url.slice("file:".length)));
+try {
+  mkdirSync(dbDir, { recursive: true });
+  accessSync(dbDir, constants.W_OK);
+} catch (e) {
+  const code = (e as NodeJS.ErrnoException).code ?? "error";
+  console.error(
+    `Cannot create or write the database folder ${dbDir} (${code}).\n` +
+      `Set DATABASE_URL to a SQLite file inside a folder this account owns, e.g. file:${os.homedir()}/pioai-data/pioai.db (no quotes).`,
+  );
+  process.exit(1);
+}
 
 execSync("npx prisma migrate deploy", { stdio: "inherit" });
 
