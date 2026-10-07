@@ -1,10 +1,11 @@
 import "dotenv/config";
 import { defineConfig } from "prisma/config";
+import { resolveDatabaseUrl } from "./src/lib/deploy-defaults";
 
-// `prisma generate` runs on install, before `.env` exists on a fresh clone, so the
-// datasource falls back to the local SQLite file that `.env.example` also uses.
-// Hosting panels often keep quotes pasted around a value, so strip them.
-const databaseUrl = process.env.DATABASE_URL?.trim().replace(/^(["'])(.*)\1$/, "$2") || "file:./dev.db";
+// `prisma generate` runs on install, before `.env` exists on a fresh clone. The
+// resolver strips quotes pasted in hosting panels and, when the variable is unset,
+// falls back to a SQLite file in the home directory (the production default).
+const databaseUrl = resolveDatabaseUrl(process.env.DATABASE_URL);
 
 export default defineConfig({
   schema: "prisma/schema.prisma",

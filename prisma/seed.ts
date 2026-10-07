@@ -12,6 +12,7 @@ import { randomBytes } from "node:crypto";
 import { hash } from "@node-rs/argon2";
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 import { PrismaClient, type Prisma } from "../src/generated/prisma/client";
+import { resolveDatabaseUrl } from "../src/lib/deploy-defaults";
 import { users } from "./seed-data/users";
 import { programs } from "./seed-data/programs";
 import { courses } from "./seed-data/courses";
@@ -20,8 +21,7 @@ import { faculty, labs, publications, projects } from "./seed-data/research";
 import { pages, posts, announcements, events } from "./seed-data/cms";
 import { organizations, leads, applications, learnerActivity, conversations, settings } from "./seed-data/ops";
 
-const url = process.env.DATABASE_URL;
-if (!url) throw new Error("DATABASE_URL is not set");
+const url = resolveDatabaseUrl(process.env.DATABASE_URL);
 if (process.env.NODE_ENV === "production" && !process.argv.includes("--force")) {
   throw new Error("Refusing to seed a production database. Pass --force if you really mean it.");
 }

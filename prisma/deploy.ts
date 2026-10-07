@@ -8,13 +8,15 @@
  */
 import "dotenv/config";
 import { execSync } from "node:child_process";
-import { accessSync, constants, mkdirSync } from "node:fs";
+import { randomBytes } from "node:crypto";
+import { accessSync, constants, mkdirSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 import { PrismaClient } from "../src/generated/prisma/client";
+import { dataDirOf, resolveDatabaseUrl, resolveSessionSecret, stripQuotes } from "../src/lib/deploy-defaults";
 
-const url = process.env.DATABASE_URL?.trim().replace(/^(["'])(.*)\1$/, "$2") || "file:./dev.db";
+const url = resolveDatabaseUrl(process.env.DATABASE_URL);
 
 // The runtime uses the SQLite adapter, so anything else (e.g. a MongoDB or Postgres
 // URL) fails later with a cryptic P1013. Name the problem without printing the value,
@@ -30,7 +32,7 @@ process.env.DATABASE_URL = url; // the migrate and seed child processes read it 
 
 // SQLite creates the file but not its folder. Name the folder and give a usable
 // example instead of a bare EACCES when the panel still holds a placeholder path.
-const dbDir = path.dirname(path.resolve(url.slice("file:".length)));
+const dbDir = dataDirOf(url);
 try {
   mkdirSync(dbDir, { recursive: true });
   accessSync(dbDir, constants.W_OK);
@@ -42,6 +44,10 @@ try {
   );
   process.exit(1);
 }
+
+// Pages are prerendered during the build, so the session secret must exist now and
+// be the same one the server reads later.
+resolveSessionSecret(process.env.SESSION_SECRET, dbDir);
 
 execSync("npx prisma migrate deploy", { stdio: "inherit" });
 
@@ -56,9 +62,16 @@ async function main() {
     await prisma.$disconnect();
   }
 
-  if (process.env.NODE_ENV === "production" && !process.env.SEED_PASSWORD) {
-    throw new Error("Empty production database: set SEED_PASSWORD so the seeded accounts do not use the public default password.");
+  // Never seed a live site with the public default password: without SEED_PASSWORD,
+  // generate one, keep a copy beside the database and let the seed print it once.
+  let password = stripQuotes(process.env.SEED_PASSWORD);
+  if (!password) {
+    password = randomBytes(12).toString("base64url");
+    const file = path.join(dbDir, "seed-password.txt");
+    writeFileSync(file, password, { mode: 0o600 });
+    console.log(`No SEED_PASSWORD set: generated one for the seeded accounts and saved it to ${file}`);
   }
+  process.env.SEED_PASSWORD = password; // the seed child process reads it
   console.log("Empty database: seeding initial content");
   execSync("npx tsx prisma/seed.ts --force", { stdio: "inherit" });
 }
