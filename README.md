@@ -50,7 +50,7 @@ To enable the AI tutor and lab reviewer, set `ANTHROPIC_API_KEY`. Without it the
 
 ## Deploying
 
-`npm run build` prepares the database before compiling: it applies migrations and seeds a database that has no users. Production needs no environment variables. The SQLite file defaults to `~/pioai-data/pioai.db` (outside the project, so redeploys keep the data), the session secret is generated once and stored beside it, the site URL defaults to https://pioai.org, and an empty database gets a generated seed password that is saved to `~/pioai-data/seed-password.txt` and printed once in the build log. Set `DATABASE_URL`, `SESSION_SECRET`, `NEXT_PUBLIC_SITE_URL` or `SEED_PASSWORD` to override any of these, and `ANTHROPIC_API_KEY` to enable the AI features.
+`npm run build` prepares the database before compiling: it applies migrations and seeds a database that has no users. It then compiles through `scripts/build.mjs`, which prints the build environment and fits the Node heap to the container's memory limit, so a build that runs out of memory on a small hosting builder fails with a message instead of hanging. Production needs no environment variables. The SQLite file defaults to `~/pioai-data/pioai.db` (outside the project, so redeploys keep the data), the session secret is generated once and stored beside it, the site URL defaults to https://pioai.org, and an empty database gets a generated seed password that is saved to `~/pioai-data/seed-password.txt` and printed once in the build log. Set `DATABASE_URL`, `SESSION_SECRET`, `NEXT_PUBLIC_SITE_URL` or `SEED_PASSWORD` to override any of these, and `ANTHROPIC_API_KEY` to enable the AI features.
 
 ## Architecture
 

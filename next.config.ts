@@ -37,10 +37,17 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
   typedRoutes: true,
   serverExternalPackages: ["better-sqlite3", "@prisma/adapter-better-sqlite3", "@node-rs/argon2"],
+  // Hosting builders are small containers: skip source maps and cap the static-generation
+  // workers (the default is one per host CPU, which a container cannot afford). The
+  // build itself runs through scripts/build.mjs, which fits the Node heap to the container.
+  productionBrowserSourceMaps: false,
+  enablePrerenderSourceMaps: false,
   experimental: {
     authInterrupts: true,
     taint: true,
     optimizePackageImports: ["lucide-react", "date-fns", "motion"],
+    serverSourceMaps: false,
+    cpus: 2,
   },
   images: {
     formats: ["image/avif", "image/webp"],
