@@ -44,7 +44,13 @@ console.log(
     ` · container limit ${limit ? `${(limit / GiB).toFixed(1)} GiB` : "none"} · NODE_OPTIONS="${nodeOptions}"`,
 );
 
-const result = spawnSync(process.execPath, ["node_modules/next/dist/bin/next", "build", ...process.argv.slice(2)], {
+// Measured on this project: Turbopack peaks at ~3.3 GB across the build processes,
+// webpack with `webpackMemoryOptimizations` at ~1.6 GB. Small hosting builders cannot
+// afford the former, so webpack is the default; pass `--turbopack` to opt back in.
+const args = process.argv.slice(2);
+const bundlerArgs = args.some((a) => a === "--turbopack" || a === "--webpack") ? [] : ["--webpack"];
+
+const result = spawnSync(process.execPath, ["node_modules/next/dist/bin/next", "build", ...bundlerArgs, ...args], {
   stdio: "inherit",
   env: { ...process.env, NODE_OPTIONS: nodeOptions },
 });

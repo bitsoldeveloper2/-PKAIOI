@@ -48,6 +48,8 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ["lucide-react", "date-fns", "motion"],
     serverSourceMaps: false,
     cpus: 2,
+    // Used only when building with `--webpack`: trades a little speed for much less memory.
+    webpackMemoryOptimizations: true,
   },
   images: {
     formats: ["image/avif", "image/webp"],
