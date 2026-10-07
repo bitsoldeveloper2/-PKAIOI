@@ -3,11 +3,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CalendarDays, CheckCircle2, Clock, GraduationCap, Wallet } from "lucide-react";
 import { getProgramBySlug } from "@/server/queries/academy";
-import { CourseCard, levelLabel } from "@/components/site/cards";
+import { CourseCard, ProgramPrice, levelLabel } from "@/components/site/cards";
 import { Markdown } from "@/components/markdown";
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
-import { formatPkr } from "@/lib/utils";
 import { siteConfig } from "@/lib/site";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -34,7 +33,7 @@ export default async function ProgramPage({ params }: { params: Promise<{ slug: 
     provider: { "@type": "CollegeOrUniversity", name: siteConfig.name, url: siteConfig.url },
     timeToComplete: `P${program.durationWeeks}W`,
     educationalProgramMode: program.format,
-    ...(program.tuitionPkr ? { offers: { "@type": "Offer", price: program.tuitionPkr, priceCurrency: "PKR" } } : {}),
+    ...(program.pricing.tuitionPkr ? { offers: { "@type": "Offer", price: program.pricing.tuitionPkr, priceCurrency: "PKR" } } : {}),
   };
 
   return (
@@ -66,7 +65,7 @@ export default async function ProgramPage({ params }: { params: Promise<{ slug: 
             {[
               { icon: Clock, label: "Duration", value: `${program.durationWeeks} weeks` },
               { icon: GraduationCap, label: "Format", value: program.format },
-              { icon: Wallet, label: "Tuition", value: program.tuitionPkr ? formatPkr(program.tuitionPkr) : "Fully funded" },
+              { icon: Wallet, label: "Tuition", value: <ProgramPrice pricing={program.pricing} /> },
               { icon: CalendarDays, label: "Intake", value: program.admissions.intake ?? "See admissions" },
             ].map((f) => (
               <div key={f.label} className="rounded-xl border border-line bg-surface p-4">

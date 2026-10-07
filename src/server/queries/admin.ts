@@ -1,4 +1,5 @@
 import "server-only";
+import { normalisePromotion } from "@/lib/pricing";
 import { cache } from "react";
 import { db } from "@/server/db";
 import { stringList } from "@/lib/utils";
@@ -72,6 +73,7 @@ export const getSettings = cache(async () => {
     banner: (map.get("site.banner") as { enabled: boolean; text: string; href: string } | undefined) ?? { enabled: false, text: "", href: "/apply" },
     intakes: (map.get("admissions.intakes") as Record<string, string> | undefined) ?? {},
     ai: (map.get("platform.ai") as { tutorEnabled: boolean; labHintsEnabled: boolean; dailyMessageCap: number } | undefined) ?? { tutorEnabled: true, labHintsEnabled: true, dailyMessageCap: 200 },
+    promotion: normalisePromotion(map.get("academy.promotion")),
   };
 });
 

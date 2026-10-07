@@ -584,4 +584,5 @@ export const settings: Record<string, unknown> = {
   "site.banner": { enabled: true, text: "Applications for the September Professional Diploma cohort close 18 July.", href: "/apply" },
   "admissions.intakes": { diploma: "September 2026", llm: "October 2026", executive: "Quarterly", foundations: "Rolling", "short courses": "Monthly" },
   "platform.ai": { tutorEnabled: true, labHintsEnabled: true, dailyMessageCap: 200 },
+  "academy.promotion": { active: true, percentOff: 50, label: "50% off all programs" },
 };

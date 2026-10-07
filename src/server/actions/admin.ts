@@ -64,6 +64,9 @@ const settingsSchema = z.object({
   tutorEnabled: z.string().optional(),
   labHintsEnabled: z.string().optional(),
   dailyMessageCap: z.coerce.number().int().min(10).max(5000),
+  promotionActive: z.string().optional(),
+  promotionPercent: z.coerce.number().int().min(0).max(90),
+  promotionLabel: z.string().trim().max(80),
 });
 
 export async function updateSettingsAction(_prev: ActionState | undefined, formData: FormData): Promise<ActionState> {
@@ -75,6 +78,7 @@ export async function updateSettingsAction(_prev: ActionState | undefined, formD
     { key: "site.banner", value: { enabled: d.bannerEnabled === "on", text: d.bannerText, href: d.bannerHref } },
     { key: "admissions.intakes", value: { diploma: d.intakeDiploma, llm: d.intakeLlm, executive: d.intakeExecutive, foundations: d.intakeFoundations } },
     { key: "platform.ai", value: { tutorEnabled: d.tutorEnabled === "on", labHintsEnabled: d.labHintsEnabled === "on", dailyMessageCap: d.dailyMessageCap } },
+    { key: "academy.promotion", value: { active: d.promotionActive === "on", percentOff: d.promotionPercent, label: d.promotionLabel || `${d.promotionPercent}% off all programs` } },
   ];
   await db.$transaction(writes.map((w) => db.siteSetting.upsert({ where: { key: w.key }, create: { key: w.key, value: w.value }, update: { value: w.value } })));
   await audit({ actorId: admin.id, action: "settings.update", entity: "SiteSetting" });

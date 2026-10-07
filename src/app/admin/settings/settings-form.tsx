@@ -11,6 +11,7 @@ type Settings = {
   banner: { enabled: boolean; text: string; href: string };
   intakes: Record<string, string>;
   ai: { tutorEnabled: boolean; labHintsEnabled: boolean; dailyMessageCap: number };
+  promotion: { active: boolean; percentOff: number; label: string };
 };
 
 export function SettingsForm({ settings }: { settings: Settings }) {
@@ -39,6 +40,18 @@ export function SettingsForm({ settings }: { settings: Settings }) {
           <Field label="LLM certificate" error={errors.intakeLlm}>{(b) => <Input {...b} name="intakeLlm" defaultValue={settings.intakes.llm ?? ""} />}</Field>
           <Field label="Executive programme" error={errors.intakeExecutive}>{(b) => <Input {...b} name="intakeExecutive" defaultValue={settings.intakes.executive ?? ""} />}</Field>
           <Field label="Foundations" error={errors.intakeFoundations}>{(b) => <Input {...b} name="intakeFoundations" defaultValue={settings.intakes.foundations ?? ""} />}</Field>
+        </div>
+      </section>
+
+      <section className="rounded-xl border border-line bg-surface p-6" aria-labelledby="promo-title">
+        <h2 id="promo-title" className="text-[1.0625rem] font-semibold text-ink">Fees and offers</h2>
+        <p className="mt-1 text-sm text-ink-muted">A percentage taken off every program fee wherever it is shown. Program records keep their full fee.</p>
+        <div className="mt-5 space-y-5">
+          <Checkbox name="promotionActive" defaultChecked={settings.promotion.active} label="Offer is on" />
+          <div className="grid gap-5 sm:grid-cols-[10rem_1fr]">
+            <Field label="Percent off" error={errors.promotionPercent}>{(b) => <Input {...b} name="promotionPercent" type="number" min={0} max={90} defaultValue={settings.promotion.percentOff} />}</Field>
+            <Field label="Label" error={errors.promotionLabel} hint="Shown on the programs page, e.g. 50% off all programs">{(b) => <Input {...b} name="promotionLabel" defaultValue={settings.promotion.label} maxLength={80} />}</Field>
+          </div>
         </div>
       </section>
 

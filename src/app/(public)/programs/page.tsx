@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { listPrograms } from "@/server/queries/academy";
+import { getPromotion, listPrograms } from "@/server/queries/academy";
+import { Badge } from "@/components/ui/badge";
 import { ProgramRow } from "@/components/site/cards";
 import { ButtonLink } from "@/components/ui/button";
 
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ProgramsPage() {
-  const programs = await listPrograms();
+  const [programs, promotion] = await Promise.all([listPrograms(), getPromotion()]);
 
   return (
     <div className="container-x py-12 md:py-16">
@@ -21,6 +22,7 @@ export default async function ProgramsPage() {
           <p className="mt-4 max-w-xl text-[1.0625rem] text-ink-muted">
             Every program is cohort-based and project-heavy. You finish with systems you built, reviewed by faculty and an industry examiner — not with a slide deck. Short courses in AI and digital media marketing run every month in one- and three-month formats.
           </p>
+          {promotion.active ? <p className="mt-5"><Badge tone="gold">{promotion.label}</Badge></p> : null}
         </div>
         <div className="flex flex-wrap gap-3 md:justify-end">
           <ButtonLink href="/apply">Start an application</ButtonLink>

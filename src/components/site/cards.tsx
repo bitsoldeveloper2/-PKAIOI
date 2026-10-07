@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight, Clock, Layers, Users } from "lucide-react";
 import type { CourseCard as CourseCardData, ProgramSummary } from "@/server/queries/academy";
+import type { Pricing } from "@/lib/pricing";
 import { cn, formatDate, formatPkr } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Avatar } from "@/components/ui/avatar";
@@ -76,6 +77,22 @@ export function CourseCard({ course, className }: { course: CourseCardData; clas
   );
 }
 
+/** A program fee; when a promotion applies, the list fee is struck through beside the offer badge. */
+export function ProgramPrice({ pricing, className }: { pricing: Pricing; className?: string }) {
+  if (pricing.tuitionPkr == null) return <span className={className}>Fully funded</span>;
+  if (pricing.listPkr == null || pricing.listPkr === pricing.tuitionPkr) return <span className={className}>{formatPkr(pricing.tuitionPkr)}</span>;
+  return (
+    <span className={cn("inline-flex flex-wrap items-baseline gap-x-2 gap-y-1", className)}>
+      <span>{formatPkr(pricing.tuitionPkr)}</span>
+      <s className="text-[0.8125rem] font-normal text-ink-subtle">
+        <span className="sr-only">was </span>
+        {formatPkr(pricing.listPkr)}
+      </s>
+      <Badge tone="gold">{`${pricing.percentOff}% off`}</Badge>
+    </span>
+  );
+}
+
 export function ProgramRow({ program, index }: { program: ProgramSummary; index?: number }) {
   return (
     <li className="group relative grid gap-4 border-t border-line py-7 md:grid-cols-[3rem_1fr_auto] md:items-baseline md:gap-8">
@@ -100,7 +117,7 @@ export function ProgramRow({ program, index }: { program: ProgramSummary; index?
         </div>
         <div className="text-right">
           <dt className="eyebrow">Tuition</dt>
-          <dd className="mt-1 tabular text-ink">{program.tuitionPkr ? formatPkr(program.tuitionPkr) : "Fully funded"}</dd>
+          <dd className="mt-1 tabular text-ink"><ProgramPrice pricing={program.pricing} /></dd>
         </div>
       </dl>
       <ArrowUpRight className="absolute right-0 top-8 hidden size-5 text-ink-subtle opacity-0 transition-opacity group-hover:opacity-100 md:block" aria-hidden />

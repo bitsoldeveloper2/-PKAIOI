@@ -2,6 +2,8 @@ import "server-only";
 import { cache } from "react";
 import { db } from "@/server/db";
 import type { CourseLevel } from "@/generated/prisma/enums";
+import { getSiteSetting } from "./cms";
+import { DEFAULT_PROMOTION, applyPromotion, normalisePromotion, type Pricing } from "@/lib/pricing";
 
 export type CourseCard = {
   id: string;
@@ -190,13 +192,19 @@ export type ProgramSummary = {
   format: string;
   durationWeeks: number;
   tuitionPkr: number | null;
+  /** The fee as shown to learners, with the site-wide promotion applied. */
+  pricing: Pricing;
   summary: string;
   featured: boolean;
   imageUrl: string | null;
   courseCount: number;
 };
 
+/** The site-wide fee promotion from admin settings; the default applies until one is saved. */
+export const getPromotion = cache(async () => normalisePromotion(await getSiteSetting("academy.promotion", DEFAULT_PROMOTION)));
+
 export const listPrograms = cache(async (): Promise<ProgramSummary[]> => {
+  const promotion = await getPromotion();
   const programs = await db.program.findMany({
     where: { published: true },
     orderBy: [{ order: "asc" }],
@@ -215,7 +223,7 @@ export const listPrograms = cache(async (): Promise<ProgramSummary[]> => {
       _count: { select: { courses: { where: { status: "PUBLISHED" } } } },
     },
   });
-  return programs.map(({ _count, ...p }) => ({ ...p, courseCount: _count.courses }));
+  return programs.map(({ _count, ...p }) => ({ ...p, pricing: applyPromotion(p.tuitionPkr, promotion), courseCount: _count.courses }));
 });
 
 export const getProgramBySlug = cache(async (slug: string) => {
@@ -240,6 +248,7 @@ export const getProgramBySlug = cache(async (slug: string) => {
     },
   });
   if (!program) return null;
+  const promotion = await getPromotion();
   const curriculum = Array.isArray(program.curriculum)
     ? (program.curriculum as { title: string; items: string[] }[])
     : [];
@@ -250,6 +259,7 @@ export const getProgramBySlug = cache(async (slug: string) => {
     curriculum,
     admissions,
     courses: program.courses.map(toCard),
+    pricing: applyPromotion(program.tuitionPkr, promotion),
   };
 });
 

@@ -5,8 +5,7 @@ import { listPrograms } from "@/server/queries/academy";
 import { getSiteSetting } from "@/server/queries/cms";
 import { ButtonLink } from "@/components/ui/button";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { levelLabel } from "@/components/site/cards";
-import { formatPkr } from "@/lib/utils";
+import { ProgramPrice, levelLabel } from "@/components/site/cards";
 
 export const metadata: Metadata = {
   title: "Admissions",
@@ -91,7 +90,7 @@ export default async function AdmissionsPage() {
                     </td>
                     <td className="px-5 py-4 text-ink-muted">{levelLabel(p.level)}</td>
                     <td className="px-5 py-4 tabular text-ink-muted">{p.durationWeeks} weeks</td>
-                    <td className="px-5 py-4 tabular text-ink-muted">{p.tuitionPkr ? formatPkr(p.tuitionPkr) : "Fully funded"}</td>
+                    <td className="px-5 py-4 tabular text-ink-muted"><ProgramPrice pricing={p.pricing} /></td>
                     <td className="px-5 py-4 text-right">
                       <Link href={`/apply?program=${p.slug}` as "/apply"} className="link">Apply</Link>
                     </td>
