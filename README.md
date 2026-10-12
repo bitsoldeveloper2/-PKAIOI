@@ -29,11 +29,13 @@ Seeded sign-ins (password `Campus!2026`, or whatever `SEED_PASSWORD` is set to):
 
 | Role | Email | Lands on |
 | --- | --- | --- |
-| Student | student@pioai.edu.pk | /campus |
 | Instructor | instructor@pioai.edu.pk | /studio |
 | Staff | staff@pioai.edu.pk | /admin |
 | Administrator | admin@pioai.edu.pk | /admin |
-| Enterprise owner | enterprise@nexus-bank.example | /campus (+ /enterprise/portal) |
+| Student (demo seed only) | student@pioai.edu.pk | /campus |
+| Enterprise owner (demo seed only) | enterprise@nexus-bank.example | /campus (+ /enterprise/portal) |
+
+A plain seed creates the institution only: staff and instructor accounts, programs, courses, labs, projects, pages and settings. Sample learners, enterprise organisations, CRM leads, applications, learner activity, tutor conversations, journal posts, announcements and events are demo data and are only seeded by `npm run db:seed:demo` (or `SEED_DEMO=1`), which the end-to-end tests need. `npm run db:purge-demo` removes those demo records from a database that already has them, leaving everything else in place.
 
 To enable the AI tutor and lab reviewer, set `ANTHROPIC_API_KEY`. Without it the platform runs fully and those features explain that AI is not configured.
 

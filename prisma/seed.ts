@@ -29,6 +29,15 @@ if (process.env.NODE_ENV === "production" && !process.argv.includes("--force")) 
 const prisma = new PrismaClient({ adapter: new PrismaBetterSqlite3({ url }) });
 const password = process.env.SEED_PASSWORD ?? "Campus!2026";
 
+/**
+ * Demo records (sample learners, enterprise organisations, CRM leads, applications,
+ * learner activity, tutor conversations and editorial samples) are only created on
+ * request: `npm run db:seed:demo`, `tsx prisma/seed.ts --demo` or SEED_DEMO=1. A plain
+ * seed creates the institution only: staff and instructor accounts, programs, courses,
+ * labs, projects, pages and settings.
+ */
+const includeDemo = process.argv.includes("--demo") || /^(1|true|yes)$/i.test(process.env.SEED_DEMO ?? "");
+
 function certificateCode() {
   const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   const bytes = randomBytes(10);
@@ -96,6 +105,7 @@ async function main() {
   const passwordHash = await hash(password, { memoryCost: 19_456, timeCost: 2, parallelism: 1 });
   const userIds = new Map<string, string>();
   for (const u of users) {
+    if (u.role === "STUDENT" && !includeDemo) continue;
     const created = await prisma.user.create({
       data: {
         email: u.email,
@@ -246,7 +256,7 @@ async function main() {
   for (const p of pages) {
     await prisma.page.create({ data: { slug: p.slug, title: p.title, body: p.body, seoTitle: p.seoTitle, seoDescription: p.seoDescription, updatedById: uid("admin") } });
   }
-  for (const p of posts) {
+  for (const p of includeDemo ? posts : []) {
     await prisma.post.create({
       data: {
         slug: p.slug,
@@ -261,12 +271,12 @@ async function main() {
       },
     });
   }
-  for (const a of announcements) {
+  for (const a of includeDemo ? announcements : []) {
     await prisma.announcement.create({
       data: { title: a.title, body: a.body, audience: a.audience, authorId: uid(a.authorKey), publishedAt: daysAgo(a.publishedDaysAgo) },
     });
   }
-  for (const e of events) {
+  for (const e of includeDemo ? events : []) {
     await prisma.campusEvent.create({
       data: {
         title: e.title,
@@ -282,7 +292,7 @@ async function main() {
 
   console.log("→ organisations");
   const orgIds = new Map<string, string>();
-  for (const o of organizations) {
+  for (const o of includeDemo ? organizations : []) {
     const created = await prisma.organization.create({
       data: {
         slug: o.slug,
@@ -298,7 +308,7 @@ async function main() {
   }
 
   console.log("→ learner activity");
-  for (const activity of learnerActivity) {
+  for (const activity of includeDemo ? learnerActivity : []) {
     const userId = uid(activity.userKey);
     for (const e of activity.enrollments) {
       const ids = lessonIds.get(e.courseSlug) ?? [];
@@ -332,7 +342,7 @@ async function main() {
   }
 
   console.log("→ CRM");
-  for (const l of leads) {
+  for (const l of includeDemo ? leads : []) {
     await prisma.lead.create({
       data: {
         name: l.name,
@@ -356,7 +366,7 @@ async function main() {
   }
 
   console.log("→ admissions");
-  for (const a of applications) {
+  for (const a of includeDemo ? applications : []) {
     await prisma.application.create({
       data: {
         programId: programIds.get(a.programSlug)!,
@@ -387,7 +397,7 @@ async function main() {
   }
 
   console.log("→ conversations");
-  for (const c of conversations) {
+  for (const c of includeDemo ? conversations : []) {
     await prisma.conversation.create({
       data: {
         userId: uid(c.userKey),
@@ -404,10 +414,12 @@ async function main() {
 
   console.log("→ settings");
   for (const [key, value] of Object.entries(settings)) {
-    await prisma.siteSetting.create({ data: { key, value: value as Prisma.InputJsonValue } });
+    const stored = key === "site.banner" && !includeDemo ? { enabled: false, text: "", href: "/apply" } : value;
+    await prisma.siteSetting.create({ data: { key, value: stored as Prisma.InputJsonValue } });
   }
 
   const counts = {
+    demo: includeDemo,
     users: await prisma.user.count(),
     programs: await prisma.program.count(),
     courses: await prisma.course.count(),

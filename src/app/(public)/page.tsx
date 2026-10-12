@@ -7,7 +7,6 @@ import { HeroScene } from "@/components/three/hero-scene";
 import { ButtonLink } from "@/components/ui/button";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { CourseCard, PostCard, ProgramRow, PublicationRow } from "@/components/site/cards";
-import { formatNumber } from "@/lib/utils";
 import { siteConfig } from "@/lib/site";
 
 export default async function HomePage() {
@@ -97,10 +96,10 @@ export default async function HomePage() {
 
           <dl className="mt-auto grid grid-cols-2 gap-6 border-t border-white/10 py-10 sm:grid-cols-4">
             {[
-              { label: "Learners", value: formatNumber(stats.learners + 2140) },
+              { label: "Programs", value: String(stats.programs) },
               { label: "Courses", value: String(stats.courses) },
               { label: "Research labs", value: String(research.labs) },
-              { label: "Certificates issued", value: formatNumber(stats.certificates + 1180) },
+              { label: "Founded", value: String(siteConfig.foundedYear) },
             ].map((s) => (
               <div key={s.label}>
                 <dt className="text-[0.75rem] font-medium uppercase tracking-[0.14em] text-white/65">{s.label}</dt>
@@ -324,11 +323,17 @@ export default async function HomePage() {
             </ButtonLink>
           }
         />
-        <div className="mt-10 grid gap-10 border-t border-line pt-10 md:grid-cols-3">
-          {posts.map((p) => (
-            <PostCard key={p.id} post={p} />
-          ))}
-        </div>
+        {posts.length ? (
+          <div className="mt-10 grid gap-10 border-t border-line pt-10 md:grid-cols-3">
+            {posts.map((p) => (
+              <PostCard key={p.id} post={p} />
+            ))}
+          </div>
+        ) : (
+          <p className="mt-10 rounded-xl border border-dashed border-line p-5 text-sm text-ink-muted">
+            Research notes, admissions news and perspectives from the institute will appear here as they are published.
+          </p>
+        )}
       </section>
 
       {/* ─── Admissions CTA ────────────────────────────────────────────── */}

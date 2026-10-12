@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getAcademyStats, getFeaturedCourses, listPrograms } from "@/server/queries/academy";
+import { siteConfig } from "@/lib/site";
 import { listUpcomingEvents } from "@/server/queries/cms";
 import { CourseCard, ProgramRow } from "@/components/site/cards";
 import { SectionHeading } from "@/components/ui/section-heading";
@@ -34,7 +35,7 @@ export default async function AcademyPage() {
           {[
             { label: "Programs", value: stats.programs },
             { label: "Courses", value: stats.courses },
-            { label: "Certificates issued", value: stats.certificates },
+            { label: "Founded", value: siteConfig.foundedYear },
           ].map((s) => (
             <div key={s.label} className="rounded-xl border border-line bg-surface p-4">
               <dt className="eyebrow">{s.label}</dt>

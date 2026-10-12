@@ -5,7 +5,6 @@ import { listLabs } from "@/server/queries/research";
 import { getAcademyStats } from "@/server/queries/academy";
 import { Markdown } from "@/components/markdown";
 import { ButtonLink } from "@/components/ui/button";
-import { formatNumber } from "@/lib/utils";
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getPageBySlug("about");
@@ -35,7 +34,7 @@ export default async function AboutPage() {
             {[
               { label: "Founded", value: "2024" },
               { label: "Courses", value: String(stats.courses) },
-              { label: "Learners", value: formatNumber(stats.learners + 2140) },
+              { label: "Programs", value: String(stats.programs) },
               { label: "Research labs", value: String(labs.length) },
             ].map((s) => (
               <div key={s.label} className="rounded-xl border border-line bg-surface p-4">

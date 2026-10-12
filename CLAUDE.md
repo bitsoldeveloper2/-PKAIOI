@@ -15,4 +15,4 @@ This is **Next.js 16** (not 13/14/15). Read `node_modules/next/dist/docs/` befor
 
 **Commands**: `npm run dev`, `npm run typecheck`, `npm run lint`, `npm test`, `npm run test:e2e` (needs a seeded DB; `npm run db:reset` reseeds), `npm run build && npm run start`.
 
-**Seed accounts** share the password in `SEED_PASSWORD` (default `Campus!2026`): student@, instructor@, staff@, admin@pioai.edu.pk and enterprise@nexus-bank.example.
+**Seed accounts** share the password in `SEED_PASSWORD` (default `Campus!2026`): instructor@, staff@ and admin@pioai.edu.pk. A plain seed holds no demo records; `npm run db:seed:demo` adds the sample learners (student@pioai.edu.pk, enterprise@nexus-bank.example), organisations, leads, applications, activity, posts and events that the e2e tests need, and `npm run db:purge-demo` removes them from an existing database.
