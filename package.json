@@ -43,7 +43,7 @@
     "lucide-react": "^1.45.0",
     "mongodb": "^6.0.0",
     "motion": "^13.2.0",
-    "next": "16.3.5",
+    "next": "16.3.6",
     "next-themes": "^0.4.6",
     "pdf-lib": "^1.17.1",
     "pyodide": "^314.0.6",
