@@ -31,7 +31,6 @@ async function uniqueSlug(base: string, exists: (slug: string) => Promise<boolea
 
 function revalidateResearch() {
   revalidatePath("/research", "layout");
-  revalidatePath("/faculty", "layout");
   revalidatePath("/admin/research", "layout");
   revalidatePath("/");
 }
@@ -43,7 +42,6 @@ const labSchema = z.object({
   tagline: z.string().trim().min(3).max(200),
   description: z.string().trim().min(20).max(20_000),
   focusAreas: z.string().max(2000).optional(),
-  leadId: z.string().max(64).optional(),
   published: z.string().optional(),
   order: z.coerce.number().int().min(0).max(100).default(0),
 });
@@ -54,7 +52,7 @@ export async function upsertLabAction(_prev: ActionState | undefined, formData: 
   const parsed = labSchema.safeParse(formToObject(formData));
   if (!parsed.success) return { ok: false, errors: fieldErrors(parsed.error), message: "Check the highlighted fields." };
   const d = parsed.data;
-  const data = { name: d.name, tagline: d.tagline, description: d.description, focusAreas: lines(d.focusAreas), leadId: d.leadId || null, published: d.published === "on", order: d.order };
+  const data = { name: d.name, tagline: d.tagline, description: d.description, focusAreas: lines(d.focusAreas), published: d.published === "on", order: d.order };
   const lab = id
     ? await db.researchLab.update({ where: { id }, data })
     : await db.researchLab.create({ data: { ...data, slug: await uniqueSlug(d.name, async (s) => Boolean(await db.researchLab.findUnique({ where: { slug: s }, select: { id: true } }))) } });
@@ -124,56 +122,13 @@ export async function upsertProjectAction(_prev: ActionState | undefined, formDa
   return { ok: true, message: "Project saved." };
 }
 
-// ── Research: faculty ────────────────────────────────────────────────────────
-
-const facultySchema = z.object({
-  name: z.string().trim().min(2).max(120),
-  title: z.string().trim().min(2).max(160),
-  department: z.string().trim().min(2).max(80),
-  bio: z.string().trim().min(20).max(10_000),
-  expertise: z.string().max(1000).optional(),
-  links: z.string().max(2000).optional(),
-  userEmail: z.string().trim().max(254).optional(),
-  featured: z.string().optional(),
-  order: z.coerce.number().int().min(0).max(100).default(0),
-});
-
-export async function upsertFacultyAction(_prev: ActionState | undefined, formData: FormData): Promise<ActionState> {
-  const staff = await requirePermission("research:manage");
-  const id = String(formData.get("id") ?? "");
-  const parsed = facultySchema.safeParse(formToObject(formData));
-  if (!parsed.success) return { ok: false, errors: fieldErrors(parsed.error), message: "Check the highlighted fields." };
-  const d = parsed.data;
-  let userId: string | null = null;
-  if (d.userEmail) {
-    const user = await db.user.findUnique({ where: { email: d.userEmail.toLowerCase() }, select: { id: true } });
-    if (!user) return { ok: false, errors: { userEmail: ["No platform account with that email."] } };
-    userId = user.id;
-  }
-  const links = lines(d.links, 10)
-    .map((l) => {
-      const [label, ...rest] = l.split("|");
-      return { label: (label ?? "").trim(), url: rest.join("|").trim() };
-    })
-    .filter((l) => l.label && /^https?:\/\//.test(l.url));
-  const data = { name: d.name, title: d.title, department: d.department, bio: d.bio, expertise: csv(d.expertise), links, userId, featured: d.featured === "on", order: d.order };
-  const member = id
-    ? await db.faculty.update({ where: { id }, data })
-    : await db.faculty.create({ data: { ...data, slug: await uniqueSlug(d.name, async (s) => Boolean(await db.faculty.findUnique({ where: { slug: s }, select: { id: true } }))) } });
-  await audit({ actorId: staff.id, action: id ? "faculty.update" : "faculty.create", entity: "Faculty", entityId: member.id });
-  revalidateResearch();
-  if (!id) redirect(`/admin/research/faculty/${member.id}` as Route);
-  return { ok: true, message: "Faculty profile saved." };
-}
-
 export async function deleteResearchItemAction(formData: FormData) {
   const staff = await requirePermission("research:manage");
-  const kind = z.enum(["labs", "publications", "projects", "faculty"]).parse(formData.get("kind"));
+  const kind = z.enum(["labs", "publications", "projects"]).parse(formData.get("kind"));
   const id = String(formData.get("id") ?? "");
   if (kind === "labs") await db.researchLab.delete({ where: { id } });
   if (kind === "publications") await db.publication.delete({ where: { id } });
   if (kind === "projects") await db.researchProject.delete({ where: { id } });
-  if (kind === "faculty") await db.faculty.delete({ where: { id } });
   await audit({ actorId: staff.id, action: `${kind}.delete`, entity: kind, entityId: id });
   revalidateResearch();
   redirect("/admin/research" as Route);

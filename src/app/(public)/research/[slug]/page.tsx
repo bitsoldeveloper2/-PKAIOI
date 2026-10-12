@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import { getLabBySlug } from "@/server/queries/research";
 import { Markdown } from "@/components/markdown";
 import { PublicationRow } from "@/components/site/cards";
-import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/utils";
 
@@ -42,16 +41,6 @@ export default async function LabPage({ params }: { params: Promise<{ slug: stri
               ))}
             </ul>
           </div>
-          {lab.lead ? (
-            <Link href={`/faculty/${lab.lead.slug}`} className="flex items-center gap-4 rounded-xl border border-line bg-surface p-5 transition-colors hover:bg-surface-2">
-              <Avatar name={lab.lead.name} src={lab.lead.photoUrl} size="lg" />
-              <div>
-                <p className="eyebrow">Lab lead</p>
-                <p className="mt-1 text-[1.0625rem] font-semibold text-ink">{lab.lead.name}</p>
-                <p className="text-sm text-ink-muted">{lab.lead.title}</p>
-              </div>
-            </Link>
-          ) : null}
         </div>
       </header>
 

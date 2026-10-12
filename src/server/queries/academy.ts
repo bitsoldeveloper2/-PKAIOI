@@ -152,7 +152,7 @@ export const getCourseBySlug = cache(async (slug: string) => {
       publishedAt: true,
       updatedAt: true,
       instructor: {
-        select: { id: true, name: true, headline: true, avatarUrl: true, bio: true, facultyProfile: { select: { slug: true, title: true } } },
+        select: { id: true, name: true, headline: true, avatarUrl: true, bio: true },
       },
       program: { select: { slug: true, title: true, level: true } },
       modules: {
@@ -268,12 +268,11 @@ export const listProgramOptions = cache(async () =>
 );
 
 export const getAcademyStats = cache(async () => {
-  const [courses, programs, learners, faculty, certificates] = await Promise.all([
+  const [courses, programs, learners, certificates] = await Promise.all([
     db.course.count({ where: { status: "PUBLISHED" } }),
     db.program.count({ where: { published: true } }),
     db.user.count({ where: { role: "STUDENT" } }),
-    db.faculty.count(),
     db.certificate.count({ where: { revokedAt: null } }),
   ]);
-  return { courses, programs, learners, faculty, certificates };
+  return { courses, programs, learners, certificates };
 });

@@ -157,21 +157,17 @@ export const getOrganizationBySlug = cache(async (slug: string) => {
 // ── Research (admin) ─────────────────────────────────────────────────────────
 
 export const listResearchAdmin = cache(async () => {
-  const [labs, publications, projects, faculty] = await Promise.all([
-    db.researchLab.findMany({ orderBy: { order: "asc" }, select: { id: true, slug: true, name: true, tagline: true, published: true, lead: { select: { name: true } }, _count: { select: { publications: true, projects: true } } } }),
+  const [labs, publications, projects] = await Promise.all([
+    db.researchLab.findMany({ orderBy: { order: "asc" }, select: { id: true, slug: true, name: true, tagline: true, published: true, _count: { select: { publications: true, projects: true } } } }),
     db.publication.findMany({ orderBy: [{ year: "desc" }, { title: "asc" }], select: { id: true, slug: true, title: true, venue: true, year: true, type: true, featured: true, published: true, lab: { select: { name: true } } } }),
     db.researchProject.findMany({ orderBy: { startedAt: "desc" }, select: { id: true, slug: true, title: true, status: true, published: true, lab: { select: { name: true } } } }),
-    db.faculty.findMany({ orderBy: [{ order: "asc" }, { name: "asc" }], select: { id: true, slug: true, name: true, title: true, department: true, featured: true, user: { select: { email: true } } } }),
   ]);
-  return { labs, publications, projects, faculty };
+  return { labs, publications, projects };
 });
 
 export const getResearchEditData = cache(async () => {
-  const [labs, faculty] = await Promise.all([
-    db.researchLab.findMany({ orderBy: { order: "asc" }, select: { id: true, name: true } }),
-    db.faculty.findMany({ orderBy: { name: "asc" }, select: { id: true, name: true } }),
-  ]);
-  return { labs, faculty };
+  const labs = await db.researchLab.findMany({ orderBy: { order: "asc" }, select: { id: true, name: true } });
+  return { labs };
 });
 
 export const getPublicationForEdit = cache(async (id: string) => {
@@ -182,11 +178,6 @@ export const getPublicationForEdit = cache(async (id: string) => {
 export const getLabForEdit = cache(async (id: string) => {
   const lab = await db.researchLab.findUnique({ where: { id } });
   return lab ? { ...lab, focusAreas: stringList(lab.focusAreas) } : null;
-});
-
-export const getFacultyForEdit = cache(async (id: string) => {
-  const f = await db.faculty.findUnique({ where: { id }, include: { user: { select: { email: true } } } });
-  return f ? { ...f, expertise: stringList(f.expertise), links: (Array.isArray(f.links) ? f.links : []) as { label: string; url: string }[] } : null;
 });
 
 export const getProjectForEdit = cache(async (id: string) => db.researchProject.findUnique({ where: { id } }));

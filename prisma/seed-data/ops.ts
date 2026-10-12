@@ -558,7 +558,7 @@ export const conversations: SeedConversation[] = [
       {
         role: "ASSISTANT",
         content:
-          "Smaller is *safer*, not *better* — you have just seen the trade-off: 0.01 was stable but needed more steps. In the lecture Dr. Rehman calls the learning rate the first hyperparameter you will ever tune, for exactly this reason.\n\nOne more thing worth noticing: your features are on the scale 0–4, so the gradients are modest. If the inputs were in the thousands, even 0.05 would diverge. That is why standardising features (the z-score lab in *Python for AI Engineers*) matters before optimisation.\n\nGo back to the lab and see whether your tests pass with 0.05 and 2,000 steps. If the second (noisy) test fails, tell me the values of w and b you get and we will look at why.",
+          "Smaller is *safer*, not *better* — you have just seen the trade-off: 0.01 was stable but needed more steps. The lecture calls the learning rate the first hyperparameter you will ever tune, for exactly this reason.\n\nOne more thing worth noticing: your features are on the scale 0–4, so the gradients are modest. If the inputs were in the thousands, even 0.05 would diverge. That is why standardising features (the z-score lab in *Python for AI Engineers*) matters before optimisation.\n\nGo back to the lab and see whether your tests pass with 0.05 and 2,000 steps. If the second (noisy) test fails, tell me the values of w and b you get and we will look at why.",
       },
     ],
   },

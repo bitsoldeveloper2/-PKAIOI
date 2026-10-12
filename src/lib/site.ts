@@ -47,7 +47,6 @@ export const publicNav = [
     children: [
       { label: "Labs", href: "/research", description: "Six labs from language to safety." },
       { label: "Publications", href: "/research/publications", description: "Papers, preprints and reports." },
-      { label: "Faculty", href: "/faculty", description: "The people behind the institute." },
     ],
   },
   { label: "Enterprise", href: "/enterprise" },
@@ -65,7 +64,6 @@ export const footerNav = {
   ],
   Institute: [
     { label: "About", href: "/about" },
-    { label: "Faculty", href: "/faculty" },
     { label: "Research", href: "/research" },
     { label: "Journal", href: "/journal" },
     { label: "Contact", href: "/contact" },

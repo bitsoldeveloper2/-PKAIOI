@@ -9,13 +9,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = siteConfig.url;
   const now = new Date();
 
-  const [courses, programs, posts, labs, publications, faculty, pages] = await Promise.all([
+  const [courses, programs, posts, labs, publications, pages] = await Promise.all([
     db.course.findMany({ where: { status: "PUBLISHED" }, select: { slug: true, updatedAt: true } }),
     db.program.findMany({ where: { published: true }, select: { slug: true, updatedAt: true } }),
     db.post.findMany({ where: { status: "PUBLISHED" }, select: { slug: true, updatedAt: true } }),
     db.researchLab.findMany({ where: { published: true }, select: { slug: true, updatedAt: true } }),
     db.publication.findMany({ where: { published: true }, select: { slug: true, updatedAt: true } }),
-    db.faculty.findMany({ select: { slug: true, updatedAt: true } }),
     db.page.findMany({ where: { status: "PUBLISHED" }, select: { slug: true, updatedAt: true } }),
   ]);
 
@@ -28,7 +27,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/apply`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/research`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { url: `${base}/research/publications`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
-    { url: `${base}/faculty`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/enterprise`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/journal`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
     { url: `${base}/contact`, lastModified: now, changeFrequency: "yearly", priority: 0.4 },
@@ -43,7 +41,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...courses.map((c) => ({ url: `${base}/courses/${c.slug}`, lastModified: c.updatedAt, changeFrequency: "weekly" as const, priority: 0.8 })),
     ...labs.map((l) => ({ url: `${base}/research/${l.slug}`, lastModified: l.updatedAt, changeFrequency: "monthly" as const, priority: 0.6 })),
     ...publications.map((p) => ({ url: `${base}/research/publications/${p.slug}`, lastModified: p.updatedAt, changeFrequency: "yearly" as const, priority: 0.5 })),
-    ...faculty.map((f) => ({ url: `${base}/faculty/${f.slug}`, lastModified: f.updatedAt, changeFrequency: "monthly" as const, priority: 0.5 })),
     ...posts.map((p) => ({ url: `${base}/journal/${p.slug}`, lastModified: p.updatedAt, changeFrequency: "monthly" as const, priority: 0.6 })),
   ];
 }

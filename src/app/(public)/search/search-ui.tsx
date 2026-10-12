@@ -13,7 +13,6 @@ const TYPE_LABEL: Record<SearchHit["type"], string> = {
   program: "Program",
   post: "Journal",
   publication: "Publication",
-  faculty: "Faculty",
   lab: "Research lab",
   page: "Page",
 };
@@ -89,7 +88,7 @@ export function SearchUI({ initialQuery, initialHits, className }: { initialQuer
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={onKeyDown}
-          placeholder="Try “evaluation”, “Urdu”, or a faculty name"
+          placeholder="Try “evaluation”, “Urdu”, or a course name"
           role="combobox"
           aria-expanded={hits.length > 0}
           aria-controls={listId}

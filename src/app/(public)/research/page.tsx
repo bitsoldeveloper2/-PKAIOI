@@ -5,7 +5,6 @@ import { getFeaturedPublications, getResearchStats, listLabs } from "@/server/qu
 import { PublicationRow } from "@/components/site/cards";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { ButtonLink } from "@/components/ui/button";
-import { Avatar } from "@/components/ui/avatar";
 
 export const metadata: Metadata = {
   title: "Research",
@@ -27,7 +26,7 @@ export default async function ResearchPage() {
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <ButtonLink href="/research/publications" size="lg">Publications</ButtonLink>
-            <ButtonLink href="/faculty" size="lg" variant="outline">Faculty</ButtonLink>
+            <ButtonLink href="/courses" size="lg" variant="outline">Courses</ButtonLink>
           </div>
         </div>
         <dl className="grid grid-cols-3 gap-4">
@@ -62,10 +61,7 @@ export default async function ResearchPage() {
                       <li key={f} className="rounded-full bg-surface-2 px-2.5 py-0.5 text-[0.75rem] text-ink-muted">{f}</li>
                     ))}
                   </ul>
-                  <div className="mt-auto flex items-center justify-between gap-3 pt-6 text-sm text-ink-muted">
-                    {lab.lead ? (
-                      <span className="inline-flex items-center gap-2"><Avatar name={lab.lead.name} src={lab.lead.photoUrl} size="xs" />{lab.lead.name}</span>
-                    ) : <span />}
+                  <div className="mt-auto pt-6 text-sm text-ink-muted">
                     <span className="tabular">{lab._count.publications} publications · {lab._count.projects} projects</span>
                   </div>
                 </Link>
@@ -77,11 +73,17 @@ export default async function ResearchPage() {
 
       <section className="container-x py-20" aria-labelledby="pubs-title">
         <SectionHeading eyebrow="Selected work" title={<span id="pubs-title">Recent publications.</span>} action={<ButtonLink href="/research/publications" variant="outline">All publications</ButtonLink>} />
-        <ol className="mt-6 border-b border-line">
-          {publications.map((p) => (
-            <PublicationRow key={p.id} pub={p} />
-          ))}
-        </ol>
+        {publications.length ? (
+          <ol className="mt-6 border-b border-line">
+            {publications.map((p) => (
+              <PublicationRow key={p.id} pub={p} />
+            ))}
+          </ol>
+        ) : (
+          <p className="mt-6 rounded-xl border border-dashed border-line p-5 text-sm text-ink-muted">
+            Papers, reports and datasets from the labs will be listed here as they are published.
+          </p>
+        )}
       </section>
     </div>
   );

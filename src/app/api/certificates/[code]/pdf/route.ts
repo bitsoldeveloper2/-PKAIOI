@@ -74,8 +74,8 @@ export async function GET(_request: NextRequest, context: { params: Promise<{ co
   }
 
   page.drawLine({ start: { x: 64, y: 108 }, end: { x: 260, y: 108 }, thickness: 0.8, color: INK });
-  page.drawText("Dr. Ayesha Rehman", { x: 64, y: 94, size: 10, font: sans, color: INK });
-  page.drawText("Dean of the Academy", { x: 64, y: 82, size: 8, font: sans, color: MUTED });
+  page.drawText("The Registrar", { x: 64, y: 94, size: 10, font: sans, color: INK });
+  page.drawText("Pakistan Institute of AI", { x: 64, y: 82, size: 8, font: sans, color: MUTED });
 
   page.drawText("Verify this certificate", { x: 64, y: 58, size: 7.5, font: sansBold, color: MUTED });
   page.drawText(verifyUrl, { x: 64, y: 47, size: 8, font: sans, color: JADE });

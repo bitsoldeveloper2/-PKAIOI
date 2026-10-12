@@ -34,7 +34,7 @@ export default async function AcademyPage() {
           {[
             { label: "Programs", value: stats.programs },
             { label: "Courses", value: stats.courses },
-            { label: "Faculty", value: stats.faculty },
+            { label: "Certificates issued", value: stats.certificates },
           ].map((s) => (
             <div key={s.label} className="rounded-xl border border-line bg-surface p-4">
               <dt className="eyebrow">{s.label}</dt>

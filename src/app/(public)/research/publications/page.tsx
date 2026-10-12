@@ -90,7 +90,11 @@ export default async function PublicationsPage({ searchParams }: { searchParams:
               ))}
             </ol>
           ) : (
-            <EmptyState className="mt-4" icon={FileText} title="No publications match" description="Try removing a filter." />
+            year || type || lab || q ? (
+              <EmptyState className="mt-4" icon={FileText} title="No publications match" description="Try removing a filter." />
+            ) : (
+              <EmptyState className="mt-4" icon={FileText} title="No publications yet" description="Papers, reports and datasets from the labs will be listed here as they are published." />
+            )
           )}
         </div>
       </div>

@@ -13,7 +13,7 @@ export const metadata: Metadata = { title: "Research" };
 
 export default async function AdminResearchPage() {
   await requirePermission("research:manage", "/admin/research");
-  const { labs, publications, projects, faculty } = await listResearchAdmin();
+  const { labs, publications, projects } = await listResearchAdmin();
 
   const table = (rows: React.ReactNode, head: string[]) => (
     <div className="overflow-x-auto rounded-xl border border-line bg-surface">
@@ -32,7 +32,7 @@ export default async function AdminResearchPage() {
 
   return (
     <div className="container-wide py-8 md:py-10">
-      <PageHeader eyebrow="Institution" title="Research" lede="Labs, publications, projects and faculty profiles shown on the public site." />
+      <PageHeader eyebrow="Institution" title="Research" lede="Labs, publications and projects shown on the public site." />
       <Tabs
         className="mt-8"
         items={[
@@ -47,12 +47,11 @@ export default async function AdminResearchPage() {
                   labs.map((l) => (
                     <tr key={l.id} className="border-b border-line last:border-b-0 hover:bg-surface-2">
                       <td className="px-4 py-3"><Link href={`/admin/research/labs/${l.id}` as Route} className="font-medium text-ink hover:text-accent">{l.name}</Link><p className="text-xs text-ink-muted">{l.tagline}</p></td>
-                      <td className="px-4 py-3 text-ink-muted">{l.lead?.name ?? "—"}</td>
                       <td className="px-4 py-3 tabular text-ink-muted">{l._count.publications} pubs · {l._count.projects} projects</td>
                       <td className="px-4 py-3">{l.published ? <Badge tone="success">published</Badge> : <Badge tone="neutral">hidden</Badge>}</td>
                     </tr>
                   )),
-                  ["Lab", "Lead", "Output", "Status"],
+                  ["Lab", "Output", "Status"],
                 )}
               </div>
             ),
@@ -95,27 +94,6 @@ export default async function AdminResearchPage() {
                     </tr>
                   )),
                   ["Project", "Lab", "Status", "Visibility"],
-                )}
-              </div>
-            ),
-          },
-          {
-            id: "faculty",
-            label: "Faculty",
-            count: faculty.length,
-            content: (
-              <div className="space-y-4">
-                <ButtonLink href={"/admin/research/faculty/new" as Route} size="sm"><Plus className="size-4" aria-hidden />New profile</ButtonLink>
-                {table(
-                  faculty.map((f) => (
-                    <tr key={f.id} className="border-b border-line last:border-b-0 hover:bg-surface-2">
-                      <td className="px-4 py-3"><Link href={`/admin/research/faculty/${f.id}` as Route} className="font-medium text-ink hover:text-accent">{f.name}</Link><p className="text-xs text-ink-muted">{f.title}</p></td>
-                      <td className="px-4 py-3 text-ink-muted">{f.department}</td>
-                      <td className="px-4 py-3 text-ink-muted">{f.user?.email ?? "No account linked"}</td>
-                      <td className="px-4 py-3">{f.featured ? <Badge tone="gold">featured</Badge> : null}</td>
-                    </tr>
-                  )),
-                  ["Faculty", "Department", "Account", ""],
                 )}
               </div>
             ),

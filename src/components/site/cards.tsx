@@ -191,35 +191,3 @@ export function PublicationRow({ pub }: { pub: PublicationRowData }) {
   );
 }
 
-export type FacultyCardData = {
-  slug: string;
-  name: string;
-  title: string;
-  department: string;
-  photoUrl: string | null;
-  expertise: string[];
-};
-
-export function FacultyCard({ member }: { member: FacultyCardData }) {
-  return (
-    <article className="group relative flex gap-4 rounded-xl border border-line bg-surface p-5 transition-[transform,box-shadow,border-color] duration-300 ease-out-quart hover:-translate-y-0.5 hover:border-line-strong hover:shadow-lift">
-      <Avatar name={member.name} src={member.photoUrl} size="lg" />
-      <div className="min-w-0">
-        <h3 className="text-[1.0625rem] font-semibold leading-snug text-ink transition-colors group-hover:text-accent">
-          <Link href={`/faculty/${member.slug}`} className="focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring">
-            <span className="absolute inset-0" aria-hidden />
-            {member.name}
-          </Link>
-        </h3>
-        <p className="mt-0.5 text-sm text-ink-muted">{member.title}</p>
-        <ul className="mt-3 flex flex-wrap gap-1.5" aria-label="Expertise">
-          {member.expertise.slice(0, 3).map((e) => (
-            <li key={e} className="rounded-full bg-surface-2 px-2 py-0.5 text-[0.75rem] text-ink-muted">
-              {e}
-            </li>
-          ))}
-        </ul>
-      </div>
-    </article>
-  );
-}

@@ -32,7 +32,7 @@ test.describe("public site", () => {
     await expect(page.getByRole("button", { name: "Sign in to enrol" })).toBeVisible();
   });
 
-  test("programs, research, faculty and journal detail pages resolve", async ({ page }) => {
+  test("programs, research and journal detail pages resolve", async ({ page }) => {
     await page.goto("/programs");
     await page.getByRole("link", { name: /Professional Diploma in Applied Artificial Intelligence/ }).first().click();
     await expect(page.getByRole("heading", { level: 1 })).toContainText("Professional Diploma");
@@ -41,13 +41,9 @@ test.describe("public site", () => {
     await page.getByRole("link", { name: /Language & Reasoning Lab/ }).first().click();
     await expect(page.getByRole("heading", { level: 1 })).toContainText("Language & Reasoning Lab");
 
-    await page.goto("/faculty");
-    await page.getByRole("link", { name: "Dr. Ayesha Rehman" }).first().click();
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("Ayesha Rehman");
-
     await page.goto("/journal");
-    await page.getByRole("link", { name: /UrduQA/ }).first().click();
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("UrduQA");
+    await page.getByRole("link", { name: /Governance Forum 2026/ }).first().click();
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Governance Forum 2026");
   });
 
   test("certificate verification handles unknown and valid codes", async ({ page, request }) => {

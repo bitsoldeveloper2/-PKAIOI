@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getPageBySlug } from "@/server/queries/cms";
-import { listFaculty, listLabs } from "@/server/queries/research";
+import { listLabs } from "@/server/queries/research";
 import { getAcademyStats } from "@/server/queries/academy";
 import { Markdown } from "@/components/markdown";
-import { FacultyCard } from "@/components/site/cards";
-import { SectionHeading } from "@/components/ui/section-heading";
 import { ButtonLink } from "@/components/ui/button";
 import { formatNumber } from "@/lib/utils";
 
@@ -19,7 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function AboutPage() {
-  const [page, faculty, labs, stats] = await Promise.all([getPageBySlug("about"), listFaculty({ featured: true }), listLabs(), getAcademyStats()]);
+  const [page, labs, stats] = await Promise.all([getPageBySlug("about"), listLabs(), getAcademyStats()]);
   if (!page) notFound();
 
   return (
@@ -36,7 +34,7 @@ export default async function AboutPage() {
           <dl className="grid grid-cols-2 gap-4">
             {[
               { label: "Founded", value: "2024" },
-              { label: "Faculty", value: String(stats.faculty) },
+              { label: "Courses", value: String(stats.courses) },
               { label: "Learners", value: formatNumber(stats.learners + 2140) },
               { label: "Research labs", value: String(labs.length) },
             ].map((s) => (
@@ -69,17 +67,6 @@ export default async function AboutPage() {
           </div>
         </aside>
       </div>
-
-      <section className="border-t border-line bg-bg-deep py-20" aria-labelledby="leadership-title">
-        <div className="container-x">
-          <SectionHeading eyebrow="Leadership" title={<span id="leadership-title">Faculty who set the standard.</span>} action={<ButtonLink href="/faculty" variant="outline">All faculty</ButtonLink>} />
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {faculty.slice(0, 4).map((f) => (
-              <FacultyCard key={f.id} member={f} />
-            ))}
-          </div>
-        </div>
-      </section>
     </div>
   );
 }

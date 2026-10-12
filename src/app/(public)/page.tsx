@@ -1,23 +1,22 @@
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, BrainCircuit, Building2, FlaskConical, GraduationCap, Sparkles, TerminalSquare } from "lucide-react";
 import { getAcademyStats, getFeaturedCourses, listPrograms } from "@/server/queries/academy";
-import { getFeaturedPublications, getResearchStats, listFaculty, listLabs } from "@/server/queries/research";
+import { getFeaturedPublications, getResearchStats, listLabs } from "@/server/queries/research";
 import { getSiteSetting, listPosts } from "@/server/queries/cms";
 import { HeroScene } from "@/components/three/hero-scene";
 import { ButtonLink } from "@/components/ui/button";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { CourseCard, FacultyCard, PostCard, ProgramRow, PublicationRow } from "@/components/site/cards";
+import { CourseCard, PostCard, ProgramRow, PublicationRow } from "@/components/site/cards";
 import { formatNumber } from "@/lib/utils";
 import { siteConfig } from "@/lib/site";
 
 export default async function HomePage() {
-  const [stats, research, programs, courses, publications, faculty, labs, posts, banner] = await Promise.all([
+  const [stats, research, programs, courses, publications, labs, posts, banner] = await Promise.all([
     getAcademyStats(),
     getResearchStats(),
     listPrograms(),
     getFeaturedCourses(3),
     getFeaturedPublications(3),
-    listFaculty({ featured: true }),
     listLabs(),
     listPosts({ limit: 3 }),
     getSiteSetting<{ enabled: boolean; text: string; href: string } | null>("site.banner", null),
@@ -99,7 +98,7 @@ export default async function HomePage() {
           <dl className="mt-auto grid grid-cols-2 gap-6 border-t border-white/10 py-10 sm:grid-cols-4">
             {[
               { label: "Learners", value: formatNumber(stats.learners + 2140) },
-              { label: "Faculty", value: String(stats.faculty) },
+              { label: "Courses", value: String(stats.courses) },
               { label: "Research labs", value: String(research.labs) },
               { label: "Certificates issued", value: formatNumber(stats.certificates + 1180) },
             ].map((s) => (
@@ -299,31 +298,17 @@ export default async function HomePage() {
                 All publications
               </Link>
             </div>
-            <ol className="mt-4 border-b border-line">
-              {publications.map((p) => (
-                <PublicationRow key={p.id} pub={p} />
-              ))}
-            </ol>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── Faculty ───────────────────────────────────────────────────── */}
-      <section className="border-t border-line bg-bg-deep py-24" aria-labelledby="faculty-title">
-        <div className="container-x">
-          <SectionHeading
-            eyebrow="Faculty"
-            title={<span id="faculty-title">Taught by people who still build.</span>}
-            action={
-              <ButtonLink href="/faculty" variant="outline">
-                Meet the faculty
-              </ButtonLink>
-            }
-          />
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {faculty.slice(0, 4).map((f) => (
-              <FacultyCard key={f.id} member={f} />
-            ))}
+            {publications.length ? (
+              <ol className="mt-4 border-b border-line">
+                {publications.map((p) => (
+                  <PublicationRow key={p.id} pub={p} />
+                ))}
+              </ol>
+            ) : (
+              <p className="mt-4 rounded-xl border border-dashed border-line p-5 text-sm text-ink-muted">
+                Papers, reports and datasets from the labs will be listed here as they are published.
+              </p>
+            )}
           </div>
         </div>
       </section>

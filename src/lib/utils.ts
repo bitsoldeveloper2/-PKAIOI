@@ -82,7 +82,7 @@ export function hourIn(timeZone: string, now = new Date()) {
 
 const HONORIFICS = new Set(["dr", "prof", "mr", "mrs", "ms", "engr", "sir", "madam", "syed", "hafiz"]);
 
-/** First name for greetings: skips honorifics so "Dr. Ayesha Rehman" greets "Ayesha". */
+/** First name for greetings: skips honorifics so "Dr. Sana Malik" greets "Sana". */
 export function firstName(name: string) {
   const parts = name.trim().split(/\s+/).filter(Boolean);
   return parts.find((p) => !HONORIFICS.has(p.replace(/\.$/, "").toLowerCase())) ?? parts[0] ?? name;

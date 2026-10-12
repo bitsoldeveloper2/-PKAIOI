@@ -13,7 +13,7 @@ async function scan(page: Page, path: string) {
 }
 
 test.describe("accessibility", () => {
-  for (const path of ["/", "/programs", "/courses", "/courses/foundations-of-machine-learning", "/research", "/faculty", "/journal", "/admissions", "/apply", "/enterprise", "/contact", "/verify", "/login", "/register"]) {
+  for (const path of ["/", "/programs", "/courses", "/courses/foundations-of-machine-learning", "/research", "/journal", "/admissions", "/apply", "/enterprise", "/contact", "/verify", "/login", "/register"]) {
     test(`public: ${path} has no serious WCAG violations`, async ({ page }) => {
       await scan(page, path);
     });

@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import { deleteResearchItemAction, upsertFacultyAction, upsertLabAction, upsertProjectAction, upsertPublicationAction, type ActionState } from "@/server/actions/content";
+import { deleteResearchItemAction, upsertLabAction, upsertProjectAction, upsertPublicationAction, type ActionState } from "@/server/actions/content";
 import { Button } from "@/components/ui/button";
 import { Checkbox, Field, Input, Select, Textarea } from "@/components/ui/field";
 import { FormStatus } from "@/components/app/form-status";
@@ -25,7 +25,7 @@ function DeleteForm({ kind, id, label }: { kind: string; id: string; label: stri
 
 type Option = { id: string; name: string };
 
-export function LabForm({ lab, faculty }: { lab: { id: string; name: string; tagline: string; description: string; focusAreas: string[]; leadId: string; published: boolean; order: number } | null; faculty: Option[] }) {
+export function LabForm({ lab }: { lab: { id: string; name: string; tagline: string; description: string; focusAreas: string[]; published: boolean; order: number } | null }) {
   const [state, action, pending] = useActionState<ActionState | undefined, FormData>(upsertLabAction, undefined);
   const e = state?.errors ?? {};
   return (
@@ -38,12 +38,6 @@ export function LabForm({ lab, faculty }: { lab: { id: string; name: string; tag
       <Field label="Description" error={e.description} hint="Markdown." required>{(b) => <Textarea {...b} name="description" defaultValue={lab?.description} rows={10} />}</Field>
       <Field label="Focus areas" error={e.focusAreas} hint="One per line.">{(b) => <Textarea {...b} name="focusAreas" defaultValue={lab?.focusAreas.join("\n")} rows={4} />}</Field>
       <div className="grid gap-5 sm:grid-cols-2">
-        <Field label="Lead" error={e.leadId}>{(b) => (
-          <Select {...b} name="leadId" defaultValue={lab?.leadId ?? ""}>
-            <option value="">No lead</option>
-            {faculty.map((f) => <option key={f.id} value={f.id}>{f.name}</option>)}
-          </Select>
-        )}</Field>
         <Field label="Order" error={e.order}>{(b) => <Input {...b} name="order" type="number" min={0} defaultValue={lab?.order ?? 0} />}</Field>
       </div>
       <Checkbox name="published" defaultChecked={lab?.published ?? true} label="Published on the public site" />
@@ -133,38 +127,6 @@ export function ProjectForm({ project, labs }: { project: { id: string; title: s
       </div>
     </ActionForm>
     {p ? <DeleteForm kind="projects" id={p.id} label="project" /> : null}
-    </>
-  );
-}
-
-export function FacultyForm({ member }: { member: { id: string; name: string; title: string; department: string; bio: string; expertise: string[]; links: { label: string; url: string }[]; userEmail: string; featured: boolean; order: number } | null }) {
-  const [state, action, pending] = useActionState<ActionState | undefined, FormData>(upsertFacultyAction, undefined);
-  const e = state?.errors ?? {};
-  const m = member;
-  return (
-    <>
-    <ActionForm action={action} className="space-y-5" noValidate>
-      {m ? <input type="hidden" name="id" value={m.id} /> : null}
-      <FormStatus state={state} />
-      <div className="grid gap-5 sm:grid-cols-2">
-        <Field label="Name" error={e.name} required>{(b) => <Input {...b} name="name" defaultValue={m?.name} />}</Field>
-        <Field label="Department" error={e.department} required>{(b) => <Input {...b} name="department" defaultValue={m?.department} />}</Field>
-      </div>
-      <Field label="Title" error={e.title} required>{(b) => <Input {...b} name="title" defaultValue={m?.title} />}</Field>
-      <Field label="Biography" error={e.bio} hint="Markdown." required>{(b) => <Textarea {...b} name="bio" defaultValue={m?.bio} rows={8} />}</Field>
-      <Field label="Expertise" error={e.expertise} hint="Comma-separated.">{(b) => <Input {...b} name="expertise" defaultValue={m?.expertise.join(", ")} />}</Field>
-      <Field label="Links" error={e.links} hint="One per line as Label | https://url">{(b) => <Textarea {...b} name="links" defaultValue={m?.links.map((l) => `${l.label} | ${l.url}`).join("\n")} rows={3} />}</Field>
-      <div className="grid gap-5 sm:grid-cols-2">
-        <Field label="Linked account email" error={e.userEmail} hint="Connects taught courses to this profile.">{(b) => <Input {...b} name="userEmail" type="email" defaultValue={m?.userEmail} />}</Field>
-        <Field label="Order" error={e.order}>{(b) => <Input {...b} name="order" type="number" min={0} defaultValue={m?.order ?? 0} />}</Field>
-      </div>
-      <Checkbox name="featured" defaultChecked={m?.featured ?? false} label="Featured on the homepage" />
-      <div className="flex items-center justify-between gap-3">
-        <Button type="submit" loading={pending}>{m ? "Save profile" : "Create profile"}</Button>
-        {m ? <DeleteButton kind="faculty" id={m.id} /> : null}
-      </div>
-    </ActionForm>
-    {m ? <DeleteForm kind="faculty" id={m.id} label="profile" /> : null}
     </>
   );
 }

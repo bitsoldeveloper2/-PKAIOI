@@ -14,7 +14,6 @@ export const listLabs = cache(async () => {
       name: true,
       tagline: true,
       focusAreas: true,
-      lead: { select: { slug: true, name: true, title: true, photoUrl: true } },
       _count: { select: { publications: { where: { published: true } }, projects: { where: { published: true } } } },
     },
   });
@@ -31,7 +30,6 @@ export const getLabBySlug = cache(async (slug: string) => {
       tagline: true,
       description: true,
       focusAreas: true,
-      lead: { select: { slug: true, name: true, title: true, photoUrl: true, department: true } },
       publications: {
         where: { published: true },
         orderBy: [{ year: "desc" }],
@@ -105,49 +103,6 @@ export const getPublicationBySlug = cache(async (slug: string) => {
     },
   });
   return pub ? { ...pub, authors: stringList(pub.authors) } : null;
-});
-
-export const listFaculty = cache(async (opts: { featured?: boolean; department?: string } = {}) => {
-  const faculty = await db.faculty.findMany({
-    where: { ...(opts.featured ? { featured: true } : {}), ...(opts.department ? { department: opts.department } : {}) },
-    orderBy: [{ featured: "desc" }, { order: "asc" }, { name: "asc" }],
-    select: { id: true, slug: true, name: true, title: true, department: true, photoUrl: true, expertise: true, featured: true },
-  });
-  return faculty.map((f) => ({ ...f, expertise: stringList(f.expertise) }));
-});
-
-export const listFacultyDepartments = cache(async () => {
-  const rows = await db.faculty.groupBy({ by: ["department"], _count: { _all: true }, orderBy: { department: "asc" } });
-  return rows.map((r) => ({ department: r.department, count: r._count._all }));
-});
-
-export const getFacultyBySlug = cache(async (slug: string) => {
-  const member = await db.faculty.findUnique({
-    where: { slug },
-    select: {
-      id: true,
-      slug: true,
-      name: true,
-      title: true,
-      department: true,
-      bio: true,
-      photoUrl: true,
-      expertise: true,
-      links: true,
-      labsLed: { where: { published: true }, select: { slug: true, name: true, tagline: true } },
-      user: {
-        select: {
-          coursesTaught: {
-            where: { status: "PUBLISHED" },
-            select: { slug: true, title: true, subtitle: true, level: true, durationHours: true, accent: true },
-          },
-        },
-      },
-    },
-  });
-  if (!member) return null;
-  const links = Array.isArray(member.links) ? (member.links as { label: string; url: string }[]) : [];
-  return { ...member, expertise: stringList(member.expertise), links, courses: member.user?.coursesTaught ?? [] };
 });
 
 export const getResearchStats = cache(async () => {

@@ -2,7 +2,7 @@ import "server-only";
 import { db } from "@/server/db";
 
 export type SearchHit = {
-  type: "course" | "program" | "post" | "publication" | "faculty" | "lab" | "page";
+  type: "course" | "program" | "post" | "publication" | "lab" | "page";
   title: string;
   subtitle: string;
   href: string;
@@ -14,7 +14,6 @@ const TYPE_LABEL: Record<SearchHit["type"], string> = {
   program: "Program",
   post: "Journal",
   publication: "Publication",
-  faculty: "Faculty",
   lab: "Research lab",
   page: "Page",
 };
@@ -43,7 +42,7 @@ export async function searchSite(rawQuery: string, limit = 20): Promise<SearchHi
   if (q.length < 2) return [];
   const take = 8;
 
-  const [courses, programs, posts, publications, faculty, labs, pages] = await Promise.all([
+  const [courses, programs, posts, publications, labs, pages] = await Promise.all([
     db.course.findMany({
       where: { status: "PUBLISHED", OR: [{ title: { contains: q } }, { subtitle: { contains: q } }, { description: { contains: q } }, { category: { contains: q } }] },
       select: { slug: true, title: true, subtitle: true, category: true, description: true },
@@ -64,11 +63,6 @@ export async function searchSite(rawQuery: string, limit = 20): Promise<SearchHi
       select: { slug: true, title: true, venue: true, abstract: true, year: true },
       take,
     }),
-    db.faculty.findMany({
-      where: { OR: [{ name: { contains: q } }, { title: { contains: q } }, { department: { contains: q } }, { bio: { contains: q } }] },
-      select: { slug: true, name: true, title: true, department: true, bio: true },
-      take,
-    }),
     db.researchLab.findMany({
       where: { published: true, OR: [{ name: { contains: q } }, { tagline: { contains: q } }, { description: { contains: q } }] },
       select: { slug: true, name: true, tagline: true, description: true },
@@ -86,7 +80,6 @@ export async function searchSite(rawQuery: string, limit = 20): Promise<SearchHi
     ...programs.map((p) => ({ type: "program" as const, title: p.title, subtitle: p.tagline, href: `/programs/${p.slug}`, meta: p.level, score: score(q, p.title, p.summary) + 5 })),
     ...posts.map((p) => ({ type: "post" as const, title: p.title, subtitle: p.excerpt, href: `/journal/${p.slug}`, meta: p.category, score: score(q, p.title, p.body) })),
     ...publications.map((p) => ({ type: "publication" as const, title: p.title, subtitle: p.venue, href: `/research/publications/${p.slug}`, meta: String(p.year), score: score(q, p.title, p.abstract) })),
-    ...faculty.map((f) => ({ type: "faculty" as const, title: f.name, subtitle: f.title, href: `/faculty/${f.slug}`, meta: f.department, score: score(q, f.name, f.bio) + 3 })),
     ...labs.map((l) => ({ type: "lab" as const, title: l.name, subtitle: l.tagline, href: `/research/${l.slug}`, score: score(q, l.name, l.description) + 2 })),
     ...pages.map((p) => ({ type: "page" as const, title: p.title, subtitle: p.body.replace(/[#*_`>]/g, "").slice(0, 120), href: `/${p.slug === "about" ? "about" : p.slug}`, score: score(q, p.title, p.body) - 5 })),
   ];

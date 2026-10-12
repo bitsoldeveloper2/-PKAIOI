@@ -72,13 +72,7 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
             <div className="mt-8 flex items-center gap-3">
               <Avatar name={course.instructor.name} src={course.instructor.avatarUrl} size="md" />
               <div className="text-sm">
-                <p className="font-semibold">
-                  {course.instructor.facultyProfile ? (
-                    <Link href={`/faculty/${course.instructor.facultyProfile.slug}`} className="hover:underline">{course.instructor.name}</Link>
-                  ) : (
-                    course.instructor.name
-                  )}
-                </p>
+                <p className="font-semibold">{course.instructor.name}</p>
                 <p className="opacity-90">{course.instructor.headline}</p>
               </div>
             </div>

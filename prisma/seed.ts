@@ -17,7 +17,7 @@ import { users } from "./seed-data/users";
 import { programs } from "./seed-data/programs";
 import { courses } from "./seed-data/courses";
 import { shortCoursePrograms, shortCourses } from "./seed-data/short-courses";
-import { faculty, labs, publications, projects } from "./seed-data/research";
+import { labs, publications, projects } from "./seed-data/research";
 import { pages, posts, announcements, events } from "./seed-data/cms";
 import { organizations, leads, applications, learnerActivity, conversations, settings } from "./seed-data/ops";
 
@@ -118,26 +118,6 @@ async function main() {
     return id;
   };
 
-  console.log("→ faculty");
-  const facultyIds = new Map<string, string>();
-  for (const [i, f] of faculty.entries()) {
-    const created = await prisma.faculty.create({
-      data: {
-        slug: f.slug,
-        name: f.name,
-        title: f.title,
-        department: f.department,
-        bio: f.bio,
-        expertise: f.expertise,
-        links: f.links,
-        featured: f.featured ?? false,
-        order: i,
-        userId: f.userKey ? uid(f.userKey) : undefined,
-      },
-    });
-    facultyIds.set(f.slug, created.id);
-  }
-
   console.log("→ programs");
   const programIds = new Map<string, string>();
   for (const [i, p] of [...programs, ...shortCoursePrograms].entries()) {
@@ -226,7 +206,6 @@ async function main() {
         tagline: lab.tagline,
         description: lab.description,
         focusAreas: lab.focusAreas,
-        leadId: lab.leadSlug ? facultyIds.get(lab.leadSlug) : undefined,
         order: i,
       },
     });

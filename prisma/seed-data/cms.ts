@@ -118,32 +118,6 @@ export type SeedPost = {
 
 export const posts: SeedPost[] = [
   {
-    slug: "urduqa-benchmark-release",
-    title: "UrduQA: why we built a benchmark that models cannot have memorised",
-    excerpt: "Static benchmarks decay the moment they enter training data. Here is how we built one that stays honest, and what it tells us about the state of Urdu language technology.",
-    category: "Research",
-    tags: ["language", "evaluation", "urdu"],
-    publishedDaysAgo: 6,
-    authorKey: "bilal",
-    body: `When we started evaluating language models on Urdu two years ago, the numbers looked encouraging. Then we noticed something: the best-performing models did suspiciously well on questions drawn from Wikipedia and suspiciously badly on questions drawn from last month’s newspapers.
-
-The explanation was mundane. The benchmarks everyone used were on the internet, and so were the models’ training sets.
-
-## Building for contamination resistance
-
-UrduQA has three properties that keep it honest:
-
-1. **Post-cutoff sources.** Every question is drawn from documents published after the training cutoff of the models we evaluate, and we refresh a portion each quarter.
-2. **Paraphrase checks.** Each question has a paraphrased twin. A large gap between twin scores signals memorisation of surface form.
-3. **Held-out release.** Half the benchmark is public; half is run by us on request. Rankings on the two halves should agree.
-
-## What we found
-
-Across fourteen models, the gap between English and Urdu performance is nineteen points on average. Two interventions close most of it: extending the tokeniser vocabulary with Urdu subwords (which also cuts token cost by 40%) and a modest amount of instruction fine-tuning on Urdu data.
-
-The full paper appears at ACL 2026. The public half of the benchmark and the evaluation harness are on the lab’s GitHub.`,
-  },
-  {
     slug: "september-2026-cohort-opens",
     title: "Applications open for the September 2026 Professional Diploma cohort",
     excerpt: "Forty places, two scholarships for women in engineering, and a new capstone partnership with the provincial health department.",
@@ -166,51 +140,6 @@ The application takes about forty minutes: a short form, a statement describing 
 [Start your application →](/apply)`,
   },
   {
-    slug: "cotton-vision-kit-field-results",
-    title: "Six months in the field with the smallholder vision kit",
-    excerpt: "What we learned deploying crop-disease detection on sub-$50 hardware across forty-one farms in Punjab — including everything that broke.",
-    category: "Research",
-    tags: ["vision", "agriculture", "edge"],
-    publishedDaysAgo: 28,
-    authorKey: "zara",
-    body: `In March we placed forty-one vision kits with cotton farmers across three districts. Each kit is a camera, a microcontroller board and a solar cell in a 3D-printed housing. The model detects leaf curl and bacterial blight and sends a daily summary by SMS.
-
-## What worked
-
-- Detection recall for leaf curl held at 91% in the field, within three points of validation.
-- Farmers used the SMS summaries; the cooperative’s agronomist changed her visit schedule based on them.
-
-## What broke
-
-- **Dust.** Lenses fogged within weeks. A cheap hood and a monthly wipe schedule fixed it.
-- **Heat.** Two boards failed above 48°C. We moved the electronics under the panel.
-- **Novel objects.** The model flagged a plastic bag as blight for a week. The review loop caught it; a retraining cycle with 200 new images fixed it.
-
-The dataset from this deployment is now part of the public release accompanying our CVPR workshop paper, and the hardware design is open.`,
-  },
-  {
-    slug: "what-a-model-card-should-tell-a-bank",
-    title: "What a model card should tell a bank",
-    excerpt: "We reviewed the documentation for twelve models in use at financial institutions in the region. Most would not pass a basic procurement check.",
-    category: "Perspectives",
-    tags: ["governance", "finance", "evaluation"],
-    publishedDaysAgo: 40,
-    authorKey: "fatima",
-    body: `Over the past year the Safety, Alignment & Governance Lab reviewed documentation for twelve models in production at banks and payment companies — with their cooperation, under NDA. Our conclusions are general enough to share.
-
-## Three gaps
-
-**No evaluation on local data.** Nine of twelve cards reported benchmark results from the vendor with no evaluation on the institution’s own transactions or customers.
-
-**No breakdown.** Only two cards reported performance by group — region, gender, account age. Aggregate accuracy hides the failures that regulators will ask about.
-
-**No limitations.** Five cards had no limitations section at all.
-
-## What to require
-
-We publish a procurement checklist in our public-sector evaluation guide. The short version: evaluation on your data, results by group, calibration, a limitations section, and the right to re-run the evaluation after every model update.`,
-  },
-  {
     slug: "governance-forum-2026",
     title: "Governance Forum 2026: regulators, companies and the questions in between",
     excerpt: "Highlights from the institute’s annual forum, held this year with the central-bank working group and three provincial departments.",
@@ -227,20 +156,6 @@ We publish a procurement checklist in our public-sector evaluation guide. The sh
 **Incident reporting.** A panel of engineers from banks and telecoms argued for a shared, anonymised incident registry for AI systems in the region. The institute will host a pilot.
 
 Recordings and slides are available to registered attendees in the campus library.`,
-  },
-  {
-    slug: "how-we-teach-evaluation",
-    title: "Why every course at the institute ends with an evaluation, not a demo",
-    excerpt: "A note from the Dean on the pedagogy behind the academy — and why we grade validation plans more heavily than model accuracy.",
-    category: "Perspectives",
-    tags: ["pedagogy", "academy"],
-    publishedDaysAgo: 75,
-    authorKey: "ayesha",
-    body: `Visitors are sometimes surprised that our grading rubrics weight *validation* at thirty-five percent and *model quality* at twenty. The reason is simple. A model that performs well on an honest evaluation is valuable. A model that performs well on a dishonest one is dangerous, and it is far more common.
-
-So we teach validation first, and we keep coming back to it. Learners in *Foundations of Machine Learning* implement cross-validation before they implement a second model. In *LLM Engineering & Evaluation* they build an evaluation set before they build the assistant. Capstones are defended in front of an examiner whose first question is always the same: how do you know?
-
-This is slower than teaching tools. It is also the only approach we have found that produces engineers we would trust with a system that affects people.`,
   },
   {
     slug: "draft-cluster-expansion",
@@ -260,7 +175,7 @@ export type SeedAnnouncement = { title: string; body: string; audience: string; 
 export const announcements: SeedAnnouncement[] = [
   {
     title: "Methods clinic every Thursday",
-    body: "Dr. Hina Aslam hosts an open statistics and methods clinic every Thursday at 5pm (Lahore) — in person and online. Bring your validation questions.",
+    body: "The academy hosts an open statistics and methods clinic every Thursday at 5pm (Lahore) — in person and online. Bring your validation questions.",
     audience: "ALL",
     authorKey: "admin",
     publishedDaysAgo: 3,
@@ -269,7 +184,7 @@ export const announcements: SeedAnnouncement[] = [
     title: "AI tutor now understands your current lesson",
     body: "The tutor in the course player can now see the lesson you are on and the code in your lab. Ask it to explain, not to solve — it is tuned to teach.",
     audience: "STUDENTS",
-    authorKey: "ayesha",
+    authorKey: "admin",
     publishedDaysAgo: 9,
   },
   {
@@ -296,7 +211,7 @@ export const events: SeedEvent[] = [
   { title: "Live session · Validation clinic", description: "Bring your cross-validation plans; we will critique three live.", type: "LECTURE", location: "Online · Campus room A", inDays: 1, hour: 17, courseSlug: "foundations-of-machine-learning" },
   { title: "Workshop · Building an evaluation set", description: "Hands-on construction of a fifty-question evaluation set for your own corpus.", type: "WORKSHOP", location: "Lahore campus · Studio 2", inDays: 3, hour: 10, durationHours: 3, courseSlug: "llm-engineering-and-evaluation" },
   { title: "Deadline · Maternal health project", description: "Submit the notebook, memo and walk-through recording.", type: "DEADLINE", location: "Project workspace", inDays: 6, hour: 23, durationHours: 0, courseSlug: "foundations-of-machine-learning" },
-  { title: "Seminar · Automation bias in clinical AI", description: "Dr. Fatima Noor presents results from the three-hospital randomised study.", type: "SEMINAR", location: "Lahore campus · Auditorium and online", inDays: 8, hour: 16 },
+  { title: "Seminar · Automation bias in clinical AI", description: "The Safety, Alignment & Governance Lab presents results from the three-hospital randomised study.", type: "SEMINAR", location: "Lahore campus · Auditorium and online", inDays: 8, hour: 16 },
   { title: "Cohort · Professional Diploma September intake begins", description: "Orientation for the new cohort.", type: "COHORT", location: "Lahore campus", inDays: 21, hour: 9, durationHours: 6 },
   { title: "Workshop · Edge deployment lab", description: "Quantise and profile a detector on Jetson-class hardware.", type: "WORKSHOP", location: "Lahore campus · Robotics lab", inDays: 12, hour: 14, durationHours: 3, courseSlug: "computer-vision-systems" },
 ];
