@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import { siteConfig } from "@/lib/site";
 
-export const alt = "Pakistan Institute of AI";
+export const alt = "The Institute of Artificial Intelligence";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -25,7 +25,7 @@ export default function OpenGraphImage() {
           <div style={{ width: 56, height: 56, borderRadius: 14, background: "#3db48c" }} />
           <div style={{ display: "flex", flexDirection: "column" }}>
             <span style={{ fontSize: 30, letterSpacing: -0.5 }}>PIOAI</span>
-            <span style={{ fontSize: 14, letterSpacing: 4, textTransform: "uppercase", opacity: 0.6, fontFamily: "sans-serif" }}>Pakistan Institute of AI</span>
+            <span style={{ fontSize: 14, letterSpacing: 4, textTransform: "uppercase", opacity: 0.6, fontFamily: "sans-serif" }}>The Institute of Artificial Intelligence</span>
           </div>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>

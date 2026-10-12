@@ -5,7 +5,7 @@ import { CertificateResult } from "./certificate-result";
 
 export const metadata: Metadata = {
   title: "Verify a certificate",
-  description: "Check the authenticity of a certificate issued by the Pakistan Institute of AI.",
+  description: "Check the authenticity of a certificate issued by The Institute of Artificial Intelligence.",
   alternates: { canonical: "/verify" },
 };
 

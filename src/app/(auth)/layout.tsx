@@ -24,7 +24,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           <p className="font-display-soft text-[2rem] leading-[1.15] text-white">
             “The institute does not teach tools. It teaches the judgement to know which tool the problem deserves.”
           </p>
-          <footer className="mt-6 text-sm text-white/70">Founding charter, Pakistan Institute of AI</footer>
+          <footer className="mt-6 text-sm text-white/70">Founding charter, The Institute of Artificial Intelligence</footer>
         </blockquote>
         <p className="relative text-xs text-white/65">Lahore · Karachi · Islamabad · Online</p>
       </aside>

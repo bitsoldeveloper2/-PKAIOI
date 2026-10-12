@@ -9,7 +9,7 @@ import { ProgramPrice, levelLabel } from "@/components/site/cards";
 
 export const metadata: Metadata = {
   title: "Admissions",
-  description: "Intakes, requirements, scholarships and how to apply to the Pakistan Institute of AI.",
+  description: "Intakes, requirements, scholarships and how to apply to The Institute of Artificial Intelligence.",
   alternates: { canonical: "/admissions" },
 };
 

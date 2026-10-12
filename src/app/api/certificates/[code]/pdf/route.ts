@@ -46,7 +46,7 @@ export async function GET(_request: NextRequest, context: { params: Promise<{ co
   // Mark + wordmark
   page.drawRectangle({ x: 64, y: height - 92, width: 28, height: 28, color: JADE, borderWidth: 0 });
   page.drawText("PIOAI", { x: 102, y: height - 84, size: 18, font: serif, color: INK });
-  page.drawText("PAKISTAN INSTITUTE OF AI", { x: 102, y: height - 98, size: 7.5, font: sans, color: MUTED });
+  page.drawText("THE INSTITUTE OF ARTIFICIAL INTELLIGENCE", { x: 102, y: height - 98, size: 7.5, font: sans, color: MUTED });
 
   page.drawText("CERTIFICATE OF COMPLETION", { x: 64, y: height - 160, size: 9, font: sansBold, color: MUTED });
   page.drawText("This certifies that", { x: 64, y: height - 200, size: 13, font: serifItalic, color: MUTED });
@@ -75,7 +75,7 @@ export async function GET(_request: NextRequest, context: { params: Promise<{ co
 
   page.drawLine({ start: { x: 64, y: 108 }, end: { x: 260, y: 108 }, thickness: 0.8, color: INK });
   page.drawText("The Registrar", { x: 64, y: 94, size: 10, font: sans, color: INK });
-  page.drawText("Pakistan Institute of AI", { x: 64, y: 82, size: 8, font: sans, color: MUTED });
+  page.drawText("The Institute of Artificial Intelligence", { x: 64, y: 82, size: 8, font: sans, color: MUTED });
 
   page.drawText("Verify this certificate", { x: 64, y: 58, size: 7.5, font: sansBold, color: MUTED });
   page.drawText(verifyUrl, { x: 64, y: 47, size: 8, font: sans, color: JADE });

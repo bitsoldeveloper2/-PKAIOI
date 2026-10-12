@@ -75,7 +75,7 @@ export default async function HomePage() {
           ) : null}
 
           <div className="max-w-3xl">
-            <p className="eyebrow text-white/70">Pakistan Institute of AI · Lahore</p>
+            <p className="eyebrow text-white/70">The Institute of Artificial Intelligence · Lahore</p>
             <h1 id="hero-title" className="mt-6 font-display text-display-xl text-white">
               An institution for the <em className="font-display-soft italic text-[#8fd7bb]">age of intelligence.</em>
             </h1>

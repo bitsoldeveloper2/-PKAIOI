@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Journal",
-  description: "Research notes, admissions news and perspectives from the Pakistan Institute of AI.",
+  description: "Research notes, admissions news and perspectives from The Institute of Artificial Intelligence.",
   alternates: { canonical: "/journal" },
 };
 

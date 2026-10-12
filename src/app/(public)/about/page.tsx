@@ -11,7 +11,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const page = await getPageBySlug("about");
   return {
     title: page?.seoTitle ?? "About",
-    description: page?.seoDescription ?? "Why the Pakistan Institute of AI exists and what it stands for.",
+    description: page?.seoDescription ?? "Why The Institute of Artificial Intelligence exists and what it stands for.",
     alternates: { canonical: "/about" },
   };
 }

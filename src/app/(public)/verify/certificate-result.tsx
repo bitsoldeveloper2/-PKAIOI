@@ -36,7 +36,7 @@ export async function CertificateResult({ code }: { code: string }) {
     <div className="overflow-hidden rounded-xl border border-success/30 bg-surface" role="status">
       <div className="flex items-center gap-3 border-b border-success/20 bg-success-soft px-6 py-4">
         <BadgeCheck className="size-6 text-success" aria-hidden />
-        <p className="text-sm font-semibold text-success">Valid certificate issued by the Pakistan Institute of AI</p>
+        <p className="text-sm font-semibold text-success">Valid certificate issued by The Institute of Artificial Intelligence</p>
       </div>
       <dl className="grid gap-x-8 gap-y-5 p-6 sm:grid-cols-2">
         <div className="sm:col-span-2">

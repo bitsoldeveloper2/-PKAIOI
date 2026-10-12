@@ -107,7 +107,7 @@ export function PlayerShell({
           <span className="hidden sm:inline">Campus</span>
         </Link>
         <span className="hidden h-5 w-px bg-line sm:block" aria-hidden />
-        <Link href="/" className="hidden sm:block" aria-label="Pakistan Institute of AI — home">
+        <Link href="/" className="hidden sm:block" aria-label="The Institute of Artificial Intelligence — home">
           <LogoMark size={24} />
         </Link>
         <p className="min-w-0 flex-1 truncate text-sm font-medium text-ink">{course.title}</p>

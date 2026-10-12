@@ -1,4 +1,4 @@
-# PIOAI — Pakistan Institute of AI
+# PIOAI — The Institute of Artificial Intelligence
 
 The institute's platform: public website, academy (programs and course catalog), an AI-native student campus (course player, Socratic tutor, in-browser coding lab, verifiable certificates), the instructor studio and course builder, and the operations console (CMS, CRM, admissions, research, enterprise, users, audit), plus a portal for enterprise partners.
 

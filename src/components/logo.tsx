@@ -37,13 +37,13 @@ export function Logo({
   href?: "/" | "/campus" | "/studio" | "/admin";
 }) {
   return (
-    <Link href={href} className={cn("group inline-flex items-center gap-2.5 rounded-md", className)} aria-label="Pakistan Institute of AI — home">
+    <Link href={href} className={cn("group inline-flex items-center gap-2.5 rounded-md", className)} aria-label="The Institute of Artificial Intelligence — home">
       <LogoMark size={30} className="transition-transform duration-300 ease-out-quart group-hover:-rotate-6" />
       <span className="flex flex-col leading-none">
         <span className={cn("font-display text-[1.1875rem] tracking-tight", invert ? "text-white" : "text-ink")}>PIOAI</span>
         {!compact ? (
           <span className={cn("mt-0.5 text-[0.625rem] font-medium uppercase tracking-[0.18em]", invert ? "text-white/70" : "text-ink-muted")}>
-            Pakistan Institute of AI
+            The Institute of Artificial Intelligence
           </span>
         ) : null}
       </span>

@@ -137,7 +137,7 @@ export function SidebarNav({ area, areas, groups, user }: { area: Area; areas: A
   const content = (
     <>
       <div className="flex items-center gap-3 px-3 pb-4">
-        <Link href="/" aria-label="Pakistan Institute of AI — home">
+        <Link href="/" aria-label="The Institute of Artificial Intelligence — home">
           <LogoMark size={28} />
         </Link>
         <div className="flex-1">
@@ -164,7 +164,7 @@ export function SidebarNav({ area, areas, groups, user }: { area: Area; areas: A
       </aside>
 
       <div className="fixed inset-x-0 top-0 z-30 flex h-14 items-center justify-between border-b border-line bg-surface px-4 lg:hidden">
-        <Link href="/" className="inline-flex items-center gap-2" aria-label="Pakistan Institute of AI — home">
+        <Link href="/" className="inline-flex items-center gap-2" aria-label="The Institute of Artificial Intelligence — home">
           <LogoMark size={26} />
           <span className="font-display text-lg text-ink">{area.label}</span>
         </Link>

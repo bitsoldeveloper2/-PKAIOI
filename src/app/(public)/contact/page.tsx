@@ -5,7 +5,7 @@ import { ContactForm } from "./contact-form";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: "Reach admissions, partnerships, research or the registrar at the Pakistan Institute of AI.",
+  description: "Reach admissions, partnerships, research or the registrar at The Institute of Artificial Intelligence.",
   alternates: { canonical: "/contact" },
 };
 

@@ -8,7 +8,7 @@ import { formatDateTime } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Academy",
-  description: "Programs, courses and admissions at the Pakistan Institute of AI academy.",
+  description: "Programs, courses and admissions at The Institute of Artificial Intelligence academy.",
   alternates: { canonical: "/academy" },
 };
 

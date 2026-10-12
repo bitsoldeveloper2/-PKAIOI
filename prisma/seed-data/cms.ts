@@ -6,8 +6,8 @@ export const pages: SeedPage[] = [
   {
     slug: "about",
     title: "About the institute",
-    seoTitle: "About · Pakistan Institute of AI",
-    seoDescription: "Why the Pakistan Institute of AI exists, how it is governed, and what it stands for.",
+    seoTitle: "About · The Institute of Artificial Intelligence",
+    seoDescription: "Why The Institute of Artificial Intelligence exists, how it is governed, and what it stands for.",
     body: `## Why we exist
 
 Pakistan has the sixth-largest population in the world, a median age of twenty-two, and a technology sector that grows faster than its supply of people who can build serious AI systems. The institute was founded in 2024 to close that gap with the same seriousness a national university brings to medicine or engineering: rigorous programs, original research and a campus where the tools are as modern as the ideas.
@@ -37,7 +37,7 @@ We work with provincial health and education departments, a central-bank working
   {
     slug: "privacy",
     title: "Privacy policy",
-    seoDescription: "How the Pakistan Institute of AI collects, uses and protects personal data.",
+    seoDescription: "How The Institute of Artificial Intelligence collects, uses and protects personal data.",
     body: `_Last updated: 1 September 2026_
 
 ## What we collect
@@ -67,7 +67,7 @@ Sessions are database-backed and revocable, all traffic is encrypted in transit,
   {
     slug: "terms",
     title: "Terms of use",
-    seoDescription: "Terms governing use of the Pakistan Institute of AI platform.",
+    seoDescription: "Terms governing use of The Institute of Artificial Intelligence platform.",
     body: `_Last updated: 1 September 2026_
 
 1. **Accounts.** You are responsible for the security of your credentials and for activity under your account. One person per account.

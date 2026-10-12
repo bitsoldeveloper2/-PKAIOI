@@ -6,7 +6,7 @@ import { ButtonLink } from "@/components/ui/button";
 
 export const metadata: Metadata = {
   title: "Programs",
-  description: "Diplomas, certificates, executive education, one- and three-month short courses in AI and digital media marketing, and a funded research fellowship at the Pakistan Institute of AI.",
+  description: "Diplomas, certificates, executive education, one- and three-month short courses in AI and digital media marketing, and a funded research fellowship at The Institute of Artificial Intelligence.",
   alternates: { canonical: "/programs" },
 };
 

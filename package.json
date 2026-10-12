@@ -2,7 +2,7 @@
   "name": "pioai",
   "version": "0.1.0",
   "private": true,
-  "description": "Pakistan Institute of AI — public site, academy, campus, studio, and institutional operations platform.",
+  "description": "The Institute of Artificial Intelligence — public site, academy, campus, studio, and institutional operations platform.",
   "engines": {
     "node": ">=22"
   },

@@ -5,7 +5,7 @@ import { ApplyForm } from "./apply-form";
 
 export const metadata: Metadata = {
   title: "Apply",
-  description: "Apply to a program at the Pakistan Institute of AI. The application takes about forty minutes.",
+  description: "Apply to a program at The Institute of Artificial Intelligence. The application takes about forty minutes.",
   alternates: { canonical: "/apply" },
 };
 
