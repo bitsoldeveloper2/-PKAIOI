@@ -52,6 +52,8 @@ To enable the AI tutor and lab reviewer, set `ANTHROPIC_API_KEY`. Without it the
 
 `npm run build` prepares the database before compiling: it applies migrations and seeds a database that has no users. It then compiles through `scripts/build.mjs`, which prints the build environment and fits the Node heap to the container's memory limit, so a build that runs out of memory on a small hosting builder fails with a message instead of hanging. It builds with webpack by default because Turbopack needs roughly twice the memory on this project (about 3.3 GB against 1.6 GB); pass `--turbopack` to `npm run build` to opt back in. Production needs no environment variables. The SQLite file defaults to `~/pioai-data/pioai.db` (outside the project, so redeploys keep the data), the session secret is generated once and stored beside it, the site URL defaults to https://pioai.org, and an empty database gets a generated seed password that is saved to `~/pioai-data/seed-password.txt` and printed once in the build log. Set `DATABASE_URL`, `SESSION_SECRET`, `NEXT_PUBLIC_SITE_URL` or `SEED_PASSWORD` to override any of these, and `ANTHROPIC_API_KEY` to enable the AI features.
 
+A database that was seeded before the faculty roster was retired and the institute renamed still holds the old content, because the build never reseeds a database that has users. Run `npm run db:sync-content` once on the server (from the project folder, after the build) to bring it in line: it renames the seeded instructor accounts, removes the former leadership's faculty profiles, journal posts and publications, and applies the institute rename to CMS pages, posts, announcements and events. It is idempotent and leaves learners, enrolments and applications alone.
+
 ## Architecture
 
 ```
